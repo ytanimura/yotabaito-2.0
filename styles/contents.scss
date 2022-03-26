@@ -1,4 +1,11 @@
 .contents {
+	width: 80vw;
+	margin: 10vw;
+	padding: 5vw;
+	background-color: white;
+	display: block;
+	z-index: 100;
+	position: absolute;
 	h1 {
 		color: red;
 		font-size: 2em;
