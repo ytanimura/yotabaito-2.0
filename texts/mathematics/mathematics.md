@@ -1,13 +1,13 @@
 # Mathematics
 
-Summary of my graduate research in mathematics.
-
 ## Subjects
 
-- Deformation problem of Clifford-Klein forms with nilpotent translation groups
-- Algebraic approach for Duflo's polynomial conjecture
+### Algebraic approach for Duflo's polynomial conjecture
 
-## Details of each Subject
+The Laplacian is invariant to isometric transforms. his property holds not only in the Euclidian space, but also in general Riemannian manifolds.
+Our interest is the generalization of this property: how many differential operators are invariant to isometric transforms?
+
+In my doctoral thesis, we consider Duflo's polynomial conjecture, algebraic abstraction of the above question, by pure-alogebraic approach.
 
 ### Deformation problem of Clifford-Klein forms with nilpotent translation groups
 
@@ -23,28 +23,25 @@ Such a space whose geometry is shared with a homogeneous space is called a Cliff
 The subject of master's thesis was to classify Clifford-Klein forms that share the same local structure with an homogeneous space
 whose collection of symmetry transformations satisfies the special condition "nilpotent".
 
-### Algebraic approach for Duflo's polynomial conjecture
+## thesis
 
-The Laplacian is invariant to isometric transforms. his property holds not only in the Euclidian space, but also in general Riemannian manifolds.
-Our interest is the generalization of this property: how many differential operators are invariant to isometric transforms?
+### Doctoral thesis
 
-In my doctoral thesis, we consider Duflo's polynomial conjecture, algebraic abstraction of the above question, by pure-alogebraic approach.
+An algebraic approach to Duflo's polynomial conjecture in the nilpotent case
 
-## Master's thesis
+### Master's thesis
 
 冪零 Lie 群の等質空間の Clifford-Klein 形の変形問題  
 ——その概要とBakloutiの予想の部分的解決——
 
-## Doctoral thesis
-
-An algebraic approach to Duflo's polynomial conjecture in the nilpotent case
-
 ## Publication
+
+### Journal
 
 - Y. Tanimura, A splitting of local rigidity of Clifford–Klein forms of homogeneous spaces of completely solvable Lie groups, International Journal of Mathematics, 32(8):2150058, 2021
 - Y. Tanimura, An algebraic approach to Duflo's polynomial conjecture in the nilpotent case, Journal of Lie Theory, 29(3):839 - 879, 2019
 
-## Presentation
+### Poster and talks
 
 - 谷村慈則、可換・冪零・可解リー群のClifford-Klein形の変形空間について（ポスター発表）、日本数学会異分野・異業種研究交流会、東京大学大学院数理科学研究科大講義室、2014年10月
 - 谷村慈則、冪零Lie群の等質空間のClifford-Klein形の変形問題、第14回関東若手幾何セミナー、首都大学東京秋葉原サテライトキャンパス、2015年5月
@@ -55,7 +52,7 @@ An algebraic approach to Duflo's polynomial conjecture in the nilpotent case
 
 ## Funding
 
-the Program for Leading Graduate Schools, MEXT, Japan
+- the Program for Leading Graduate Schools, MEXT, Japan
 
 ## Education and outreach activities
 

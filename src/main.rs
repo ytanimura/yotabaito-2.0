@@ -17,9 +17,7 @@ impl Component for App {
     }
 
     fn view(&self, _: &Context<Self>) -> Html {
-        html! {
-            <><contents::Contents /><background::BackGround /></>
-        }
+        html! { <><contents::Contents /><background::BackGround /></> }
     }
 }
 

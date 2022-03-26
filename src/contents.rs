@@ -28,7 +28,7 @@ impl Component for Contents {
     }
 
     fn view(&self, _: &Context<Self>) -> Html {
-        let content = markdown2html(include_str!("../texts/profile.md"));
+        let content = markdown2html(include_str!("../texts/mathematics/mathematics.md"));
         html! {
             <div class="contents">{ html2div(&content) }</div>
         }

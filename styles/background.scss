@@ -1,8 +1,14 @@
 .background {
 	width: 100vw;
 	height: 100vh;
-	background-color: bisque;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background-color: #FCFCFC;
 	display: block;
 	overflow: hidden;
 	position: fixed;
+	z-index: 0;
 }
