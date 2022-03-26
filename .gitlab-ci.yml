@@ -1,0 +1,23 @@
+stages:
+  - build
+  - deploy
+
+build:
+  image: registry.gitlab.com/ytanimura/yotabaito/ci-container
+  stage: build
+  script:
+    - trunk build
+  artifacts:
+    paths:
+      - dist
+
+pages:
+  image: debian:latest
+  stage: deploy
+  script:
+    - mv dist public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
