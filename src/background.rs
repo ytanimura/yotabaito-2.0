@@ -2,14 +2,16 @@ use crate::*;
 use wasm_bindgen::JsCast;
 use web_sys::{WebGl2RenderingContext as GL, *};
 
+const PIXEL_RATIO: u32 = 2;
+
 pub enum Msg {
     Render(f64),
 }
 
 pub struct BackGround {
     gl: Option<GL>,
-    node_ref: NodeRef,
-    render_loop: Option<gloo_render::AnimationFrame>,
+    canvas: NodeRef,
+    render_loop: Option<gloo::render::AnimationFrame>,
 }
 
 impl Component for BackGround {
@@ -19,7 +21,7 @@ impl Component for BackGround {
     fn create(_: &Context<Self>) -> Self {
         Self {
             gl: None,
-            node_ref: Default::default(),
+            canvas: Default::default(),
             render_loop: None,
         }
     }
@@ -27,7 +29,12 @@ impl Component for BackGround {
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Render(timestamp) => {
-                let canvas = self.node_ref.cast::<HtmlCanvasElement>().unwrap();
+                let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
+                let doc = gloo::utils::document_element();
+                if canvas.width() != doc.client_width() as u32 / PIXEL_RATIO
+                    || canvas.height() != doc.client_height() as u32 / PIXEL_RATIO {
+                    self.init_gl();
+                }
                 let resolution = [canvas.width() as f32, canvas.height() as f32];
                 if let Some(gl) = &self.gl {
                     gl_rendering(
@@ -44,22 +51,11 @@ impl Component for BackGround {
     }
 
     fn view(&self, _: &Context<Self>) -> Html {
-        html! {
-            <canvas ref={self.node_ref.clone()} class="background"></canvas>
-        }
+        html! { <canvas ref={ self.canvas.clone() } class="background"></canvas> }
     }
 
     fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
-        let canvas = self.node_ref.cast::<HtmlCanvasElement>().unwrap();
-
-        let gl: GL = canvas
-            .get_context("webgl2")
-            .unwrap()
-            .unwrap()
-            .dyn_into()
-            .unwrap();
-        self.gl = Some(gl);
-
+        self.init_gl();
         if first_render {
             self.set_render_loop(ctx);
         }
@@ -68,16 +64,25 @@ impl Component for BackGround {
 
 impl BackGround {
     fn set_render_loop(&mut self, ctx: &Context<Self>) {
-        // The callback to request animation frame is passed a time value which can be used for
-        // rendering motion independent of the framerate which may vary.
-        let handle = {
-            let link = ctx.link().clone();
-            gloo_render::request_animation_frame(move |time| link.send_message(Msg::Render(time)))
-        };
-
-        // A reference to the handle must be stored, otherwise it is dropped and the render won't
-        // occur.
+        let link = ctx.link().clone();
+        let handle =
+            gloo::render::request_animation_frame(move |time| link.send_message(Msg::Render(time)));
         self.render_loop = Some(handle);
+    }
+    fn init_gl(&mut self) {
+        let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
+
+        let doc = gloo::utils::document_element();
+        canvas.set_width(doc.client_width() as u32 / 4);
+        canvas.set_height(doc.client_height() as u32 / 4);
+
+        let gl: GL = canvas
+            .get_context("webgl2")
+            .unwrap()
+            .unwrap()
+            .dyn_into()
+            .unwrap();
+        self.gl = Some(gl);
     }
 }
 
@@ -122,38 +127,38 @@ void main(void){
     gl.use_program(Some(&program));
 
     // create vbo
-    let vertex_buffer = gl.create_buffer().unwrap();
+    let vertex_buffer = gl.create_buffer();
     let vertex_buffer_js = js_sys::Float32Array::from(POSITIONS);
     let position_location = gl.get_attrib_location(&program, "position") as u32;
-    gl.bind_buffer(GL::ARRAY_BUFFER, Some(&vertex_buffer));
+    gl.bind_buffer(GL::ARRAY_BUFFER, vertex_buffer.as_ref());
     gl.buffer_data_with_array_buffer_view(GL::ARRAY_BUFFER, &vertex_buffer_js, GL::STATIC_DRAW);
     gl.enable_vertex_attrib_array(position_location);
     gl.vertex_attrib_pointer_with_i32(position_location, 3, GL::FLOAT, false, 0, 0);
 
     // create ibo
-    let index_buffer = gl.create_buffer().unwrap();
+    let index_buffer = gl.create_buffer();
     let index_buffer_js = js_sys::Uint32Array::from(INDEX);
-    gl.bind_buffer(GL::ELEMENT_ARRAY_BUFFER, Some(&index_buffer));
+    gl.bind_buffer(GL::ELEMENT_ARRAY_BUFFER, index_buffer.as_ref());
     gl.buffer_data_with_array_buffer_view(
         GL::ELEMENT_ARRAY_BUFFER,
         &index_buffer_js,
         GL::STATIC_DRAW,
     );
 
-    let resolution_location = gl.get_uniform_location(&program, "iResolution").unwrap();
-    let time_location = gl.get_uniform_location(&program, "iTime").unwrap();
+    let resolution_location = gl.get_uniform_location(&program, "iResolution");
+    let time_location = gl.get_uniform_location(&program, "iTime");
 
     gl.clear_color(0.0, 0.0, 0.0, 1.0);
 
     gl.clear(GL::COLOR_BUFFER_BIT);
 
     gl.uniform3f(
-        Some(&resolution_location),
+        resolution_location.as_ref(),
         resolution[0],
         resolution[1],
         0.0,
     );
-    gl.uniform1f(Some(&time_location), time * 0.001);
+    gl.uniform1f(time_location.as_ref(), time * 0.001);
 
     gl.draw_elements_with_i32(GL::TRIANGLES, 6, GL::UNSIGNED_INT, 0);
     gl.flush();

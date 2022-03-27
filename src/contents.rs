@@ -11,10 +11,9 @@ fn markdown2html(markdown: &str) -> String {
 }
 
 fn html2div(html: &str) -> Html {
-    let div = (|| -> Option<web_sys::Element> {
-        web_sys::window()?.document()?.create_element("div").ok()
-    })()
-    .unwrap();
+    let div = gloo::utils::document()
+        .create_element("div")
+        .expect_throw("failed to create div");
     div.set_inner_html(&html);
     Html::VRef(div.into())
 }
@@ -29,8 +28,6 @@ impl Component for Contents {
 
     fn view(&self, _: &Context<Self>) -> Html {
         let content = markdown2html(include_str!("../texts/mathematics/mathematics.md"));
-        html! {
-            <div class="contents">{ html2div(&content) }</div>
-        }
+        html! { <div class="contents">{ html2div(&content) }</div> }
     }
 }

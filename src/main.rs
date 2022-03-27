@@ -1,6 +1,7 @@
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+use wasm_bindgen::UnwrapThrowExt;
 use yew::prelude::*;
 
 mod background;
