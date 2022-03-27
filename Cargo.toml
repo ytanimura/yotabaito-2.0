@@ -7,12 +7,21 @@ edition = "2021"
 
 [dependencies]
 console_error_panic_hook = "0.1.7"
+js-sys = "0.3.56"
 pulldown-cmark = "0.9.1"
+gloo-render = "0.1.0"
 wasm-bindgen = "0.2.79"
 wee_alloc = "0.4.5"
-ybc = "0.2.1"
-yew = "0.19.3"
 web-sys = { version = "0.3.56", features = [
 	"Document",
+	"HtmlCanvasElement",
+	"WebGl2RenderingContext",
+	"WebGlBuffer",
+	"WebGlProgram",
+	"WebGlRenderingContext",
+	"WebGlShader",
+	"WebGlUniformLocation",
 	"Window",
 ] }
+ybc = "0.2.1"
+yew = "0.19.3"

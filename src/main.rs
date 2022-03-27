@@ -3,8 +3,8 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 use yew::prelude::*;
 
-mod contents;
 mod background;
+mod contents;
 
 struct App;
 
