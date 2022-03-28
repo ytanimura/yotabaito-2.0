@@ -1,6 +1,16 @@
 stages:
+  - tests
   - build
   - deploy
+
+format:
+  image: rust:latest
+  stage: test
+  before_script:
+    - rustup component add rustfmt clippy
+  script:
+    - cargo fmt --check
+    - cargo clippy
 
 build:
   image: registry.gitlab.com/ytanimura/yotabaito/ci-container

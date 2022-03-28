@@ -1,5 +1,5 @@
-use std::path::Path;
 use std::fs::DirEntry;
+use std::path::Path;
 
 fn main() -> std::io::Result<()> {
     let mut out_code = String::from(
@@ -7,7 +7,7 @@ fn main() -> std::io::Result<()> {
     );
     set_text_dir(&mut out_code, "./texts")?;
     out_code += "].into_iter().collect()}";
-	std::fs::write(std::env::var("OUT_DIR").unwrap() + "/texts.rs", &out_code)
+    std::fs::write(std::env::var("OUT_DIR").unwrap() + "/texts.rs", &out_code)
 }
 
 fn set_text_dir(out_code: &mut String, path: impl AsRef<Path>) -> std::io::Result<()> {

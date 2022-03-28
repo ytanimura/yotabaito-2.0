@@ -30,11 +30,10 @@ impl Component for BackGround {
         match msg {
             Msg::Render(timestamp) => {
                 let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
-                let doc = gloo::utils::document_element();
-                if canvas.width() != doc.client_width() as u32 / PIXEL_RATIO
-                    || canvas.height() != doc.client_height() as u32 / PIXEL_RATIO
-                {
-                    self.init_gl();
+                if correct_canvas_size(&canvas) {
+                    if let Some(gl) = &self.gl {
+                        gl.viewport(0, 0, canvas.width() as i32, canvas.height() as i32);
+                    }
                 }
                 let resolution = [canvas.width() as f32, canvas.height() as f32];
                 if let Some(gl) = &self.gl {
@@ -56,7 +55,16 @@ impl Component for BackGround {
     }
 
     fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
-        self.init_gl();
+        let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
+        correct_canvas_size(&canvas);
+
+        let gl: GL = canvas
+            .get_context("webgl2")
+            .unwrap()
+            .unwrap()
+            .dyn_into()
+            .unwrap();
+        self.gl = Some(gl);
         if first_render {
             self.set_render_loop(ctx);
         }
@@ -70,21 +78,17 @@ impl BackGround {
             gloo::render::request_animation_frame(move |time| link.send_message(Msg::Render(time)));
         self.render_loop = Some(handle);
     }
-    fn init_gl(&mut self) {
-        let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
+}
 
-        let doc = gloo::utils::document_element();
-        canvas.set_width(doc.client_width() as u32 / 4);
-        canvas.set_height(doc.client_height() as u32 / 4);
-
-        let gl: GL = canvas
-            .get_context("webgl2")
-            .unwrap()
-            .unwrap()
-            .dyn_into()
-            .unwrap();
-        self.gl = Some(gl);
+fn correct_canvas_size(canvas: &HtmlCanvasElement) -> bool {
+    let doc = gloo::utils::document_element();
+    let resized = canvas.width() != doc.client_width() as u32 / PIXEL_RATIO
+        || canvas.height() != doc.client_height() as u32 / PIXEL_RATIO;
+    if resized {
+        canvas.set_width(doc.client_width() as u32 / PIXEL_RATIO);
+        canvas.set_height(doc.client_height() as u32 / PIXEL_RATIO);
     }
+    resized
 }
 
 fn gl_rendering(gl: &GL, shader: &str, resolution: [f32; 2], time: f32) {

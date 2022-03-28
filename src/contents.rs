@@ -13,7 +13,7 @@ fn html2div(html: &str) -> Html {
     let div = gloo::utils::document()
         .create_element("div")
         .expect_throw("failed to create div");
-    div.set_inner_html(&html);
+    div.set_inner_html(html);
     Html::VRef(div.into())
 }
 
@@ -29,11 +29,12 @@ impl Component for Contents {
 
     fn view(&self, _: &Context<Self>) -> Html {
         let location = gloo::utils::window().location();
-        let hash = location.hash().unwrap_or(String::new());
-        let content = match self.contents.get(&hash[1..]) {
+        let hash = location.hash().unwrap_or_else(|_| String::new());
+        let hash = if hash.is_empty() { "" } else { &hash[1..] };
+        let content = match self.contents.get(&hash) {
             Some(got) => got,
             None => "404 not found",
         };
-        html! { <div class="contents">{ html2div(&content) }</div> }
+        html! { <div class="contents">{ html2div(content) }</div> }
     }
 }
