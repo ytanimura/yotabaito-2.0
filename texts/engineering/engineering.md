@@ -2,7 +2,13 @@
 
 ## OSS currently under development
 
-- [truck](https://github.com/ricosjp/truck): OSS Rust shape processing kernel  
+### [truck](https://github.com/ricosjp/truck) (development director)
+
+A shape processing kernel written in Rust.
+
+### [ruststep](https://github.com/ricosjp/ruststep) (contributor)
+
+Crates for STEP (Standard for the Exchange of Product model data) written in pure Rust aimed at replacing stepcode.
 
 ## Experience of programming langueges
 
@@ -18,13 +24,10 @@ Ruby, C++, C, D, Java, PostScript, VBA
 
 C#, Go, Javascript, Perl, PHP, Python, Scala, Swift, Typescript
 
-## Another skills
-
-LaTeX, Beamer, Word, Powerpoint, Inkscape
-
 ## Lisence
 
-応用情報技術者、データベーススペシャリスト
+- 応用情報技術者
+- データベーススペシャリスト
 
 ## Lecture
 
@@ -32,5 +35,13 @@ Teaching assistant of [計算数学I/II](https://sites.google.com/g.ecc.u-tokyo.
 
 ## Intern
 
-Lattice Technology Co. Ltd. 2 weeks in Summer, 2016
-3D modeling by XVL (proprietary format of LT) ([成果物](https://ytanimura.github.io/yotabaito/works/xvl_intern))
+### Lattice Technology Co. Ltd. 2 weeks in Summer, 2016
+
+3D modeling of dodecahedron in a spherical model in 3D hyperbolic space by XVL (proprietary format of LT).  
+Since XVL is a lightweight and fast 3D format, I thought that fractal-like shapes could be rendered using this format.
+
+- [the case that the angle between the faces is 90°](https://drive.google.com/u/1/uc?id=0B2tz_MyG7hkeT1hOUzlId0s5VEU&export=download)
+（[lightweight version](https://drive.google.com/u/1/uc?id=0B2tz_MyG7hkeeFZiYkt4T2luSms&export=download)）  
+- [the case that the angle between the faces is 60°](https://drive.google.com/u/1/uc?id=0B2tz_MyG7hkebFVrNkxhZ2N2TFk&export=download)  
+
+[XVL Player](https://www.lattice.co.jp/download/xvl-player/) is required for viewing them.

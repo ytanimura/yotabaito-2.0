@@ -23,7 +23,7 @@ Such a space whose geometry is shared with a homogeneous space is called a Cliff
 The subject of master's thesis was to classify Clifford-Klein forms that share the same local structure with an homogeneous space
 whose collection of symmetry transformations satisfies the special condition "nilpotent".
 
-## thesis
+## Thesis
 
 ### Doctoral thesis
 
@@ -65,6 +65,6 @@ An algebraic approach to Duflo's polynomial conjecture in the nilpotent case
 I took the Future Faculty Program at the University of Tokyo during my first year as a Ph. I was the first participant in the Graduate School of Mathematical Sciences.  
 I was able to learn everything from how to write a syllabus to how to organize a lecture and typical active learning techniques.
 
-### [Videos for mathematical education](https://ytanimura.github.io/yotabaito/works/movie)
+### [Videos for mathematical education](./?doc=lecture-movie) (Japanese)
 
 I made a video of a lecture I gave on topological space theory in a graduate school lecture. Through a friend of mine, I held a viewing party at Azabu High School.  

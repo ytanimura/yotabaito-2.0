@@ -28,9 +28,11 @@ impl Component for Contents {
     }
 
     fn view(&self, _: &Context<Self>) -> Html {
+        use qstring::QString;
         let location = gloo::utils::window().location();
-        let hash = location.hash().unwrap_or_else(|_| String::new());
-        let hash = if hash.is_empty() { "" } else { &hash[1..] };
+        let raw_query = location.search().expect_throw("failed to get query");
+        let query = QString::from(raw_query.as_str());
+        let hash = query.get("doc").unwrap_or("profile");
         let content = match self.contents.get(&hash) {
             Some(got) => got,
             None => "404 not found",
