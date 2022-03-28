@@ -5,7 +5,7 @@ stages:
 
 format:
   image: rust:latest
-  stage: test
+  stage: tests
   before_script:
     - rustup component add rustfmt clippy
   script:
