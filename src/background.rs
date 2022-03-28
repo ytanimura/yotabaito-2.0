@@ -32,7 +32,8 @@ impl Component for BackGround {
                 let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
                 let doc = gloo::utils::document_element();
                 if canvas.width() != doc.client_width() as u32 / PIXEL_RATIO
-                    || canvas.height() != doc.client_height() as u32 / PIXEL_RATIO {
+                    || canvas.height() != doc.client_height() as u32 / PIXEL_RATIO
+                {
                     self.init_gl();
                 }
                 let resolution = [canvas.width() as f32, canvas.height() as f32];
