@@ -10,21 +10,27 @@ $width_margin: math.div(100vw - $contents_width - $padding_width * 2, 2);
 .contents {
 	width: $contents_width;
 	height: $contents_height;
+
 	padding-top: $padding_height;
 	padding-bottom: $padding_height;
 	padding-left: $padding_width;
 	padding-right: $padding_width;
+
 	margin-top: $height_margin;
 	margin-bottom: $height_margin;
 	margin-left: $width_margin;
 	margin-right: $width_margin;
-	display: block;
-	z-index: 100;
-	overflow-y: scroll;
-	position: absolute;
-	background-color: rgba(1.0, 1.0, 1.0, 0.7);
 
-	color: #FCFCFC;
+	display: block;
+	position: absolute;
+	z-index: 100;
+	
+	overflow-y: auto;
+	
+	background-color: rgba(#292d3e, 0.9);
+	scrollbar-color: #abb2bf #292d3e;
+
+	color: #fffefe;
 
 	h1 {
 		text-align: center;

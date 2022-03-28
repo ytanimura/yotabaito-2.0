@@ -68,3 +68,9 @@ I was able to learn everything from how to write a syllabus to how to organize a
 ### [Videos for mathematical education](./?doc=lecture-movie) (Japanese)
 
 I made a video of a lecture I gave on topological space theory in a graduate school lecture. Through a friend of mine, I held a viewing party at Azabu High School.  
+
+## Misc
+
+### [さとりのしょ (Words of Wisdom)](./?doc=satorinosho) (Japanese)
+
+It was a series of notebooks I was making during my graduate school years. There are no plans to translate them into English.

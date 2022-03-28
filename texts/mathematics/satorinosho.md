@@ -1,6 +1,4 @@
-# さとりのしょ(Words of Wisdom)
-
-It was a series of notebooks I was making during my graduate school years. There are no plans to translate them into English.
+# さとりのしょ
 
 ## 解析セミナー
 
