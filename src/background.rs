@@ -14,9 +14,11 @@ pub enum Msg {
 #[derive(Clone, Debug)]
 struct Pipeline {
     program: WebGlProgram,
+    texture: Option<WebGlTexture>,
     position_location: u32,
     resolution_location: Option<WebGlUniformLocation>,
     time_location: Option<WebGlUniformLocation>,
+    texture_location: Option<WebGlUniformLocation>,
     pixel_ratio: u32,
 }
 
@@ -155,23 +157,69 @@ fn correct_canvas_size(canvas: &HtmlCanvasElement, pixel_ratio: u32) -> bool {
     resized
 }
 
-fn create_pipeline(gl: &GL, shader: &str) -> Pipeline {
-    let program = prepare_program(gl, shader);
+fn create_pipeline(gl: &GL, shader: &'static str) -> Pipeline {
+    let (program, texture) = prepare_program(gl, shader);
     Pipeline {
         position_location: gl.get_attrib_location(&program, "position") as u32,
         resolution_location: gl.get_uniform_location(&program, "iResolution"),
         time_location: gl.get_uniform_location(&program, "iTime"),
+        texture_location: gl.get_uniform_location(&program, "iChannel0"),
         program,
+        texture,
         pixel_ratio: 1,
     }
 }
 
-fn prepare_program(gl: &GL, shader: &str) -> WebGlProgram {
+fn shader_trim(gl: GL, shader: &'static str) -> (&'static str, Option<WebGlTexture>) {
+    use std::io::{BufRead, BufReader};
+    let first_line = BufReader::new(shader.as_bytes())
+        .lines()
+        .next()
+        .unwrap()
+        .unwrap();
+    if first_line.len() >= 10 && &first_line[0..10] == "#iChannel0" {
+        let path = std::path::Path::new(&first_line[12..first_line.len() - 1]);
+        let path = String::from("./") + path.file_name().unwrap().to_str().unwrap();
+        let texture = gl.create_texture();
+        let res_texture = texture.clone();
+        let image = HtmlImageElement::new().expect_throw("failed to create Image element");
+        let cloned_image = image.clone();
+        gloo::events::EventListener::once(&image, "load", move |_| {
+            gloo::console::log!(&cloned_image);
+            gl.bind_texture(GL::TEXTURE_2D, texture.as_ref());
+            gl.pixel_storei(GL::UNPACK_FLIP_Y_WEBGL, 1);
+            gl.tex_image_2d_with_u32_and_u32_and_html_image_element(
+                GL::TEXTURE_2D,
+                0,
+                GL::RGBA as i32,
+                GL::RGBA,
+                GL::UNSIGNED_BYTE,
+                &cloned_image,
+            )
+            .unwrap_or_else(|e| panic!("{e:?}"));
+            gl.tex_parameteri(GL::TEXTURE_2D, GL::TEXTURE_MAG_FILTER, GL::LINEAR as i32);
+            gl.tex_parameteri(
+                GL::TEXTURE_2D,
+                GL::TEXTURE_MIN_FILTER,
+                GL::LINEAR_MIPMAP_NEAREST as i32,
+            );
+            gl.generate_mipmap(GL::TEXTURE_2D);
+            gl.bind_texture(GL::TEXTURE_2D, None);
+        })
+        .forget();
+        image.set_src(&path);
+        (&shader[first_line.len() + 1..], res_texture)
+    } else {
+        (shader, None)
+    }
+}
+
+fn prepare_program(gl: &GL, shader: &'static str) -> (WebGlProgram, Option<WebGlTexture>) {
     const VERTEX_SHADER: &str = "#version 300 es
 in vec3 position;void main(){gl_Position=vec4(position,1);}";
     const FRAMENT_SHADER_PREFIX: &str = "#version 300 es
-precision highp float;uniform vec3 iResolution;uniform float iTime;out vec4 outColor;\
-void mainImage(out vec4,in vec2);void main(){mainImage(outColor,gl_FragCoord.xy);}";
+precision highp float;uniform vec3 iResolution;uniform float iTime;uniform sampler2D iChannel0;\
+out vec4 outColor;void mainImage(out vec4,in vec2);void main(){mainImage(outColor,gl_FragCoord.xy);}";
 
     // vertex shader
     let vert_shader = gl
@@ -184,6 +232,7 @@ void mainImage(out vec4,in vec2);void main(){mainImage(outColor,gl_FragCoord.xy)
     let frag_shader = gl
         .create_shader(GL::FRAGMENT_SHADER)
         .expect_throw("failed to create shader pointer");
+    let (shader, texture) = shader_trim(gl.clone(), shader);
     let shader = String::from(FRAMENT_SHADER_PREFIX) + shader;
     gl.shader_source(&frag_shader, &shader);
     gl.compile_shader(&frag_shader);
@@ -196,7 +245,7 @@ void mainImage(out vec4,in vec2);void main(){mainImage(outColor,gl_FragCoord.xy)
     gl.attach_shader(&program, &frag_shader);
     gl.link_program(&program);
 
-    program
+    (program, texture)
 }
 
 fn init_gl(gl: &GL) {
@@ -238,6 +287,8 @@ fn gl_rendering(gl: &GL, pipeline: &Pipeline, resolution: [f32; 2], time: f32) {
         position_location,
         resolution_location,
         time_location,
+        texture_location,
+        texture,
         ..
     } = pipeline;
     gl.use_program(Some(program));
@@ -252,6 +303,8 @@ fn gl_rendering(gl: &GL, pipeline: &Pipeline, resolution: [f32; 2], time: f32) {
         0.0,
     );
     gl.uniform1f(time_location.as_ref(), time * 0.001);
+    gl.uniform1i(texture_location.as_ref(), 0);
+    gl.bind_texture(GL::TEXTURE_2D, texture.as_ref());
 
     gl.clear(GL::COLOR_BUFFER_BIT);
     gl.draw_elements_with_i32(GL::TRIANGLES, 6, GL::UNSIGNED_INT, 0);
