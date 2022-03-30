@@ -182,7 +182,10 @@ void mainImage0(out vec4 fragColor, vec2 fragCoord) {
         if (dist0 < 1.0e-4 || dist > 5.0) break;
     }
 
-    vec3 col = pow(vec3(0x29, 0x2d, 0x3e) / 255.0, vec3(2.2));
+    const vec3 BLUE0 = vec3(160, 216, 234) / 255.0;
+    const vec3 BLUE1 = vec3(108, 155, 210) / 255.0;
+    float y = (1.0 + ray.direction.y) * 0.5;
+    vec3 col = pow((1.0 - y) * BLUE0 + y * BLUE1, vec3(2.2));
     if (dist0 < 1.0e-4) {
         vec3 normal = calcNormal(p);
         float c = 0.8 * microfacet(

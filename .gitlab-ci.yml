@@ -16,7 +16,7 @@ build:
   image: registry.gitlab.com/ytanimura/yotabaito/ci-container
   stage: build
   script:
-    - trunk build
+    - trunk build --release
   artifacts:
     paths:
       - dist

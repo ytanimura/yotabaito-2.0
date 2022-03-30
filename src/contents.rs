@@ -1,20 +1,22 @@
 use crate::*;
-use std::collections::HashMap;
 
 pub struct Contents {
-    contents: HashMap<&'static str, &'static str>,
+    div: NodeRef,
 }
 
 mod texts {
     include!(concat!(env!("OUT_DIR"), "/texts.rs"));
 }
 
-fn html2div(html: &str) -> Html {
-    let div = gloo::utils::document()
-        .create_element("div")
-        .expect_throw("failed to create div");
-    div.set_inner_html(html);
-    Html::VRef(div.into())
+fn get_text() -> &'static str {
+    use qstring::QString;
+    let location = gloo::utils::window().location();
+    let raw_query = location.search().expect_throw("failed to get query");
+    let query = QString::from(raw_query.as_str());
+    let hash = query.get("doc").unwrap_or("profile");
+    texts::get_texts()
+        .get(&hash)
+        .unwrap_or(&"<h1>404 not found</h1>")
 }
 
 impl Component for Contents {
@@ -23,20 +25,16 @@ impl Component for Contents {
 
     fn create(_: &Context<Self>) -> Self {
         Self {
-            contents: texts::get_markdowns(),
+            div: Default::default(),
         }
     }
 
     fn view(&self, _: &Context<Self>) -> Html {
-        use qstring::QString;
-        let location = gloo::utils::window().location();
-        let raw_query = location.search().expect_throw("failed to get query");
-        let query = QString::from(raw_query.as_str());
-        let hash = query.get("doc").unwrap_or("profile");
-        let content = match self.contents.get(&hash) {
-            Some(got) => got,
-            None => "404 not found",
-        };
-        html! { <div class="contents">{ html2div(content) }</div> }
+        html! { <div class="contents" ref={ self.div.clone() }  /> }
+    }
+
+    fn rendered(&mut self, _: &Context<Self>, _: bool) {
+        let div = self.div.cast::<web_sys::HtmlDivElement>().unwrap();
+        div.set_inner_html(get_text());
     }
 }
