@@ -7,8 +7,6 @@ mod shaders {
     include!(concat!(env!("OUT_DIR"), "/shaders.rs"));
 }
 
-const PIXEL_RATIO: u32 = 1;
-
 pub enum Msg {
     Render(f64),
 }
@@ -19,6 +17,7 @@ struct Pipeline {
     position_location: u32,
     resolution_location: Option<WebGlUniformLocation>,
     time_location: Option<WebGlUniformLocation>,
+    pixel_ratio: u32,
 }
 
 #[derive(Clone, Debug)]
@@ -76,50 +75,12 @@ impl Component for BackGround {
         }
     }
 
-    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::Render(timestamp) => {
-                let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
-                if correct_canvas_size(&canvas) {
-                    if let Some(gl) = &self.gl {
-                        gl.viewport(0, 0, canvas.width() as i32, canvas.height() as i32);
-                    }
-                }
-                match (&self.gl, &self.pipeline) {
-                    (Some(gl), Some(pipeline)) => {
-                        // 30 FPS
-                        if self.frame_count % 2 == 0 {
-                            gl_rendering(
-                                gl,
-                                pipeline,
-                                [canvas.width() as f32, canvas.height() as f32],
-                                timestamp as f32,
-                            );
-                        }
-                        self.frame_count += 1;
-                    }
-                    (Some(_), None) => {
-                        self.pipeline = match &self.pipeline_builder {
-                            Some(builder) => builder.take(),
-                            None => None,
-                        };
-                    }
-                    _ => {}
-                }
-                self.set_render_loop(ctx);
-                false
-            }
-        }
-    }
-
     fn view(&self, _: &Context<Self>) -> Html {
         html! { <canvas ref={ self.canvas.clone() } class="background"></canvas> }
     }
 
     fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
         let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
-        correct_canvas_size(&canvas);
-
         self.gl = { || canvas.get_context("webgl2").ok()??.dyn_into().ok() }();
         if let Some(gl) = &self.gl {
             init_gl(gl);
@@ -143,6 +104,35 @@ impl Component for BackGround {
             self.set_render_loop(ctx);
         }
     }
+
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+        let Msg::Render(timestamp) = msg;
+        let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
+        match (&self.gl, &self.pipeline) {
+            (Some(gl), Some(pipeline)) => {
+                if correct_canvas_size(&canvas, pipeline.pixel_ratio) {
+                    if let Some(gl) = &self.gl {
+                        gl.viewport(0, 0, canvas.width() as i32, canvas.height() as i32);
+                    }
+                }
+                // 30 FPS
+                if self.frame_count % 2 == 0 {
+                    let resolution = [canvas.width() as f32, canvas.height() as f32];
+                    gl_rendering(gl, pipeline, resolution, timestamp as f32);
+                }
+                self.frame_count += 1;
+            }
+            (Some(_), None) => {
+                self.pipeline = self
+                    .pipeline_builder
+                    .as_ref()
+                    .and_then(PipelineBuilder::take);
+            }
+            _ => {}
+        }
+        self.set_render_loop(ctx);
+        false
+    }
 }
 
 impl BackGround {
@@ -154,13 +144,13 @@ impl BackGround {
     }
 }
 
-fn correct_canvas_size(canvas: &HtmlCanvasElement) -> bool {
+fn correct_canvas_size(canvas: &HtmlCanvasElement, pixel_ratio: u32) -> bool {
     let doc = gloo::utils::document_element();
-    let resized = canvas.width() != doc.client_width() as u32 / PIXEL_RATIO
-        || canvas.height() != doc.client_height() as u32 / PIXEL_RATIO;
+    let resized = canvas.width() != doc.client_width() as u32 / pixel_ratio
+        || canvas.height() != doc.client_height() as u32 / pixel_ratio;
     if resized {
-        canvas.set_width(doc.client_width() as u32 / PIXEL_RATIO);
-        canvas.set_height(doc.client_height() as u32 / PIXEL_RATIO);
+        canvas.set_width(doc.client_width() as u32 / pixel_ratio);
+        canvas.set_height(doc.client_height() as u32 / pixel_ratio);
     }
     resized
 }
@@ -172,6 +162,7 @@ fn create_pipeline(gl: &GL, shader: &str) -> Pipeline {
         resolution_location: gl.get_uniform_location(&program, "iResolution"),
         time_location: gl.get_uniform_location(&program, "iTime"),
         program,
+        pixel_ratio: 1,
     }
 }
 
@@ -247,6 +238,7 @@ fn gl_rendering(gl: &GL, pipeline: &Pipeline, resolution: [f32; 2], time: f32) {
         position_location,
         resolution_location,
         time_location,
+        ..
     } = pipeline;
     gl.use_program(Some(program));
 

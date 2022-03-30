@@ -2,14 +2,13 @@
 // Copyright © 2022 yotabaito
 // Attribution 4.0 International (CC BY 4.0)
 
-/******************** Hash & Noise ********************/
-// https://www.shadertoy.com/view/XlXcW4
-uvec3 hash(uvec3 x) {
-    const uint k = 1103515245U;
-    x = ((x>>8U)^x.yzx)*k;
-    x = ((x>>8U)^x.yzx)*k;
-    x = ((x>>8U)^x.yzx)*k;
-    return x;
+/******************** Hash ********************/
+// Hash without Sine https://www.shadertoy.com/view/4djSRW
+float hash11(float p) {
+    p = fract(p * .1031);
+    p *= p + 33.33;
+    p *= p + p;
+    return fract(p);
 }
 
 /******************** 3D ToolKit ********************/
@@ -122,6 +121,19 @@ float sdStar5(in vec2 p, in float r, in float rf) {
     return length(p-ba*h) * sign(p.y*ba.x-p.x*ba.y);
 }
 
+float sdOctahedron( vec3 p, float s) {
+  p = abs(p);
+  float m = p.x+p.y+p.z-s;
+  vec3 q;
+       if( 3.0*p.x < m ) q = p.xyz;
+  else if( 3.0*p.y < m ) q = p.yzx;
+  else if( 3.0*p.z < m ) q = p.zxy;
+  else return m*0.57735027;
+    
+  float k = clamp(0.5*(q.z-q.y+s),0.0,s); 
+  return length(vec3(q.x,q.y-s+k,q.z-k)); 
+}
+
 /******************** Main ********************/
 float preDist(in vec3 p, uint distId) {
     switch (distId) {
@@ -129,19 +141,20 @@ float preDist(in vec3 p, uint distId) {
         case 1u: return sdTorus(p, vec2(0.8, 0.2));
         case 2u: return sdBox(p - vec3(0,0.15,0), 1.0 / sqrt(2.0)) - 0.01;
         case 3u: return length(vec2(max(sdStar5(p.xy, 1.0, 0.4), 0.0), max(abs(p.z) - 0.1, 0.0))) - 0.01;
+        case 4u: return sdOctahedron(p, 1.0);
         default: return 1.0;
     }
 }
 
 float sDist(in vec3 p) {
     float ft = fract(iTime / 5.0);
-    uint it = uint(iTime / 5.0);
-    uint distId = hash(uvec3(it, 1u, 2u)).x % 4u;
+    float it = floor(iTime / 5.0);
+    uint distId = uint(hash11(it + 0.13) * 5.0);
     float dist = 0.0;
     if (ft < 0.9) {
         dist = preDist(p, distId);
     } else {
-        uint nextDistId = hash(uvec3(it + 1u, 1u, 2u)).x % 4u;
+        uint nextDistId = uint(hash11(it + 1.0 + 0.13) * 5.0);
         dist = mix(
             preDist(p, distId),
             preDist(p, nextDistId),
@@ -180,7 +193,7 @@ void mainImage0(out vec4 fragColor, vec2 fragCoord) {
     }
 
     vec3 col = pow(vec3(144, 215, 236) / 255.0, vec3(2.2));
-    if (dist0 < 1.0e-4) {
+    if (dist < 5.0) {
         vec3 normal = calcNormal(p);
         col = -dot(normal, ray.direction) * vec3(0.8, 0.9, 1.0);
     }
