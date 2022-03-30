@@ -20,6 +20,7 @@ web-sys = { version = "0.3.56", features = [
 	"Location",
 	"HtmlCanvasElement",
 	"HtmlDivElement",
+	"CanvasRenderingContext2d",
 	"WebGl2RenderingContext",
 	"WebGlBuffer",
 	"WebGlProgram",

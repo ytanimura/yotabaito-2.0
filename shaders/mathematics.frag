@@ -6,9 +6,6 @@
 // https://www.shadertoy.com/view/XlXcW4
 uvec3 hash(uvec3 x) {
     const uint k = 1103515245U;
-    x.y = ((x.y>>8U)^x.y)*k;
-    x.z = ((x.z>>8U)^x.z)*k;
-    x.z = ((x.z>>8U)^x.z)*k;
     x = ((x>>8U)^x.yzx)*k;
     x = ((x>>8U)^x.yzx)*k;
     x = ((x>>8U)^x.yzx)*k;
@@ -164,7 +161,7 @@ vec3 calcNormal(in vec3 p) {
 }
 
 void mainImage0(out vec4 fragColor, vec2 fragCoord) {
-    vec3 pos = vec3(3.0 * sin(iTime), 1.5, 3.0 * cos(iTime));
+    vec3 pos = vec3(3.0 * sin(iTime), 1.25, 3.0 * cos(iTime));
     Camera camera = Camera(
         pos,
         -normalize(pos),
@@ -182,20 +179,10 @@ void mainImage0(out vec4 fragColor, vec2 fragCoord) {
         if (dist0 < 1.0e-4 || dist > 5.0) break;
     }
 
-    const vec3 BLUE0 = vec3(160, 216, 234) / 255.0;
-    const vec3 BLUE1 = vec3(108, 155, 210) / 255.0;
-    float y = (1.0 + ray.direction.y) * 0.5;
-    vec3 col = pow((1.0 - y) * BLUE0 + y * BLUE1, vec3(2.2));
+    vec3 col = pow(vec3(144, 215, 236) / 255.0, vec3(2.2));
     if (dist0 < 1.0e-4) {
         vec3 normal = calcNormal(p);
-        float c = 0.8 * microfacet(
-            normal,
-            ray.direction,
-            ray.direction,
-            0.03,
-            0.5
-        );
-        col = vec3(c);
+        col = -dot(normal, ray.direction) * vec3(0.8, 0.9, 1.0);
     }
 
     fragColor = vec4(col,1);

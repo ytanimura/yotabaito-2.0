@@ -25,7 +25,7 @@ struct Pipeline {
 struct PipelineBuilder(Arc<Mutex<Option<Pipeline>>>);
 
 impl PipelineBuilder {
-    fn new(gl: Arc<GL>, shader: &'static str) -> Self {
+    fn new(gl: GL, shader: &'static str) -> Self {
         let arc = Arc::new(Mutex::new(None));
         let cloned_arc = Arc::clone(&arc);
         wasm_bindgen_futures::spawn_local(async move {
@@ -87,6 +87,7 @@ impl Component for BackGround {
                 }
                 match (&self.gl, &self.pipeline) {
                     (Some(gl), Some(pipeline)) => {
+                        // 30 FPS
                         if self.frame_count % 2 == 0 {
                             gl_rendering(
                                 gl,
@@ -97,12 +98,11 @@ impl Component for BackGround {
                         }
                         self.frame_count += 1;
                     }
-                    (Some(gl), None) => {
+                    (Some(_), None) => {
                         self.pipeline = match &self.pipeline_builder {
                             Some(builder) => builder.take(),
                             None => None,
                         };
-                        gl.clear(GL::COLOR_BUFFER_BIT);
                     }
                     _ => {}
                 }
@@ -124,16 +124,20 @@ impl Component for BackGround {
         if let Some(gl) = &self.gl {
             init_gl(gl);
             if let Some(shader) = get_shader() {
-                self.pipeline_builder = Some(PipelineBuilder::new(Arc::new(gl.clone()), shader));
+                self.pipeline_builder = Some(PipelineBuilder::new(gl.clone(), shader));
             } else {
                 gloo::utils::window()
                     .alert_with_message("failed to load shader")
                     .expect_throw("failed to show alert");
             }
         } else {
-            gloo::utils::window()
-                .alert_with_message("failed to initialize webgl2")
-                .expect_throw("failed to show alert");
+            let ctx: CanvasRenderingContext2d =
+                { || canvas.get_context("2d").ok()??.dyn_into().ok() }()
+                    .expect_throw("failed to init rendering context 2d");
+            ctx.set_font("30px serif");
+            let y = canvas.height() - 30;
+            ctx.fill_text("Failed to init WebGL2...", 30.0, y as f64)
+                .unwrap_or_else(|e| gloo::console::log!(format!("{e:?}")));
         }
         if first_render {
             self.set_render_loop(ctx);
@@ -205,7 +209,7 @@ void mainImage(out vec4,in vec2);void main(){mainImage(outColor,gl_FragCoord.xy)
 }
 
 fn init_gl(gl: &GL) {
-    gl.clear_color(0.0, 0.0, 0.0, 1.0);
+    gl.clear_color(0.0, 0.0, 0.0, 0.0);
 
     #[rustfmt::skip]
     const POSITIONS: &[f32] = &[
