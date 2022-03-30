@@ -2,3 +2,8 @@
 target = "index.html"
 dist = "dist"
 public_url = "./"
+
+[[hooks]]
+stage = "pre_build"
+command = "curl"
+command_arguments = ["https://raw.githubusercontent.com/otaviogood/shader_fontgen/master/codepage12.png", "-o", "codepage12.png"]
