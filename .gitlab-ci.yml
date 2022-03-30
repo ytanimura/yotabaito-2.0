@@ -16,7 +16,6 @@ build:
   image: registry.gitlab.com/ytanimura/yotabaito/ci-container
   stage: build
   before_script:
-    - rustup default stable
     - rustup update
   script:
     - trunk build --release
