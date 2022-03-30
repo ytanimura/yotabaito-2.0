@@ -6,26 +6,26 @@
 
 ### 擬Riemann多様体の完備性について  
 
-[![擬Riemann多様体の完備性について](https://img.youtube.com/vi/tBhczaOVDfg/0.jpg)](https://www.youtube.com/watch?v=tBhczaOVDfg)  
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/tBhczaOVDfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ### 研究紹介動画  
 
-[![研究紹介動画](https://img.youtube.com/vi/J6GVGCP_RZY/0.jpg)](https://www.youtube.com/watch?v=J6GVGCP_RZY)
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/J6GVGCP_RZY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## 位相空間論のレクチャ動画(D2の頃に作成)
 
 ### Lecture1 The Field of Real Number
 
-[![Lecture1](https://img.youtube.com/vi/lmYDiuMv9HI/0.jpg)](https://www.youtube.com/watch?v=lmYDiuMv9HI)  
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/lmYDiuMv9HI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ### Lecture2 Neighbourhood Systems
 
-[![Lecture2](https://img.youtube.com/vi/grYNRj1PYew/0.jpg)](https://www.youtube.com/watch?v=grYNRj1PYew)  
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/grYNRj1PYew" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ### Lecture3 Open Set Systems
 
-[![Lecture3](https://img.youtube.com/vi/FN2y6j9VeIE/0.jpg)](https://www.youtube.com/watch?v=FN2y6j9VeIE)  
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/FN2y6j9VeIE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ### Lecture4 Compact and Hausdorff
 
-[![Lecture4](https://img.youtube.com/vi/U_y5QUO7_U0/0.jpg)](https://www.youtube.com/watch?v=U_y5QUO7_U0)  
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/U_y5QUO7_U0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

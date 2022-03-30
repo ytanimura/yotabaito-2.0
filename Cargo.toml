@@ -14,6 +14,7 @@ js-sys = "0.3.56"
 gloo = "0.6.1"
 qstring = "0.7.2"
 wasm-bindgen = "0.2.79"
+wasm-bindgen-futures = "*"
 wee_alloc = "0.4.5"
 web-sys = { version = "0.3.56", features = [
 	"Document",

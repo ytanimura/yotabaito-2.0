@@ -2,14 +2,14 @@
 
 ## Subjects
 
-### Algebraic approach for Duflo's polynomial conjecture
+### Algebraic approach for Duflo's polynomial conjecture (Doctoral theme)
 
 The Laplacian is invariant to isometric transforms. his property holds not only in the Euclidian space, but also in general Riemannian manifolds.
 Our interest is the generalization of this property: how many differential operators are invariant to isometric transforms?
 
 In my doctoral thesis, we consider Duflo's polynomial conjecture, algebraic abstraction of the above question, by pure-alogebraic approach.
 
-### Deformation problem of Clifford-Klein forms with nilpotent translation groups
+### Deformation problem of Clifford-Klein forms with nilpotent translation groups (Master's theme)
 
 Two figures in the Euclidean plane are congruent if one of them is shifted to the other by the three kinds of transforms: the translations, the rotations, and the reflections.
 In other words, the geometry of the Euclidean space is defined by the symmetry caused by a collection of all such transforms.
@@ -43,16 +43,21 @@ An algebraic approach to Duflo's polynomial conjecture in the nilpotent case
 
 ### Poster and talks
 
-- 谷村慈則、可換・冪零・可解リー群のClifford-Klein形の変形空間について（ポスター発表）、日本数学会異分野・異業種研究交流会、東京大学大学院数理科学研究科大講義室、2014年10月
-- 谷村慈則、冪零Lie群の等質空間のClifford-Klein形の変形問題、第14回関東若手幾何セミナー、首都大学東京秋葉原サテライトキャンパス、2015年5月
-- Y. Tanimura, "A splitting of the local rigidity of Clifford-Klein forms of homogeneous spaces of nilpotent Lie groups," SEMINAIRE, Universite Tunis El Manar Labora-torire LATAO, Faculte des Sciences de Tunis Department de Mathematiques, January, 2017
-- 谷村慈則、可解な階層付きリー代数に対応するリー群を変換群とする Clifford-Klein 形の柔軟性について、日本数学会2017年度年会、首都大学東京南大沢キャンパス、2017年3月
-- Y. Tanimura, "An application of F-method to nilpotent homogeneous spaces," 5th Tunisian-Japanese Conference Geometric and Harmonic Analysis on Homogeneous Spaces and Applications, Royal Elmansour Hotel, Mahdia, Tunisia, December, 2017
 - Y. Tanimura, "An algebraic approach to Duflo's polynomial conjecture in the nilpotent case," Algebraic Lie Theory and Representation Theory, 山喜旅館, Ito, Shizuoka, May, 2019
+- Y. Tanimura, "An application of F-method to nilpotent homogeneous spaces," 5th Tunisian-Japanese Conference Geometric and Harmonic Analysis on Homogeneous Spaces and Applications, Royal Elmansour Hotel, Mahdia, Tunisia, December, 2017
+- 谷村慈則、可解な階層付きリー代数に対応するリー群を変換群とする Clifford-Klein 形の柔軟性について、日本数学会2017年度年会、首都大学東京南大沢キャンパス、2017年3月
+- Y. Tanimura, "A splitting of the local rigidity of Clifford-Klein forms of homogeneous spaces of nilpotent Lie groups," SEMINAIRE, Universite Tunis El Manar Labora-torire LATAO, Faculte des Sciences de Tunis Department de Mathematiques, January, 2017
+- 谷村慈則、冪零Lie群の等質空間のClifford-Klein形の変形問題、第14回関東若手幾何セミナー、首都大学東京秋葉原サテライトキャンパス、2015年5月
+- 谷村慈則、可換・冪零・可解リー群のClifford-Klein形の変形空間について（ポスター発表）、日本数学会異分野・異業種研究交流会、東京大学大学院数理科学研究科大講義室、2014年10月
 
 ## Funding
 
 - the Program for Leading Graduate Schools, MEXT, Japan
+
+## Study Abroad
+
+- University of California, Berkeley, America, 2 weeks in Feb, 2016.
+- University of Sfax, Tunisia (Dec, 2016 - Feb, 2017)
 
 ## Education and outreach activities
 
