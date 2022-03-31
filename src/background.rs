@@ -1,5 +1,8 @@
 use crate::*;
-use std::sync::{Arc, Mutex};
+use std::sync::{
+    atomic::{AtomicU32, Ordering},
+    Arc, Mutex,
+};
 use wasm_bindgen::JsCast;
 use web_sys::{WebGl2RenderingContext as GL, *};
 
@@ -19,6 +22,8 @@ struct Pipeline {
     resolution_location: Option<WebGlUniformLocation>,
     time_location: Option<WebGlUniformLocation>,
     texture_location: Option<WebGlUniformLocation>,
+    texture_resolution_location: Option<WebGlUniformLocation>,
+    texture_resolution: Option<Arc<[AtomicU32; 2]>>,
     pixel_ratio: u32,
 }
 
@@ -110,7 +115,7 @@ impl Component for BackGround {
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         let Msg::Render(timestamp) = msg;
         let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
-        match (&self.gl, &self.pipeline) {
+        match (&self.gl, &mut self.pipeline) {
             (Some(gl), Some(pipeline)) => {
                 if correct_canvas_size(&canvas, pipeline.pixel_ratio) {
                     if let Some(gl) = &self.gl {
@@ -158,19 +163,28 @@ fn correct_canvas_size(canvas: &HtmlCanvasElement, pixel_ratio: u32) -> bool {
 }
 
 fn create_pipeline(gl: &GL, shader: &'static str) -> Pipeline {
-    let (program, texture) = prepare_program(gl, shader);
+    let (program, texture, texture_resolution) = prepare_program(gl, shader);
     Pipeline {
         position_location: gl.get_attrib_location(&program, "position") as u32,
         resolution_location: gl.get_uniform_location(&program, "iResolution"),
         time_location: gl.get_uniform_location(&program, "iTime"),
         texture_location: gl.get_uniform_location(&program, "iChannel0"),
+        texture_resolution_location: gl.get_uniform_location(&program, "iChannelResolution"),
+        texture_resolution,
         program,
         texture,
         pixel_ratio: 1,
     }
 }
 
-fn shader_trim(gl: GL, shader: &'static str) -> (&'static str, Option<WebGlTexture>) {
+fn shader_trim(
+    gl: GL,
+    shader: &'static str,
+) -> (
+    &'static str,
+    Option<WebGlTexture>,
+    Option<Arc<[AtomicU32; 2]>>,
+) {
     use std::io::{BufRead, BufReader};
     let first_line = BufReader::new(shader.as_bytes())
         .lines()
@@ -184,8 +198,9 @@ fn shader_trim(gl: GL, shader: &'static str) -> (&'static str, Option<WebGlTextu
         let res_texture = texture.clone();
         let image = HtmlImageElement::new().expect_throw("failed to create Image element");
         let cloned_image = image.clone();
+        let image_resolution = Arc::new([AtomicU32::new(0), AtomicU32::new(0)]);
+        let cloned_image_resolution = Arc::clone(&image_resolution);
         gloo::events::EventListener::once(&image, "load", move |_| {
-            gloo::console::log!(&cloned_image);
             gl.bind_texture(GL::TEXTURE_2D, texture.as_ref());
             gl.pixel_storei(GL::UNPACK_FLIP_Y_WEBGL, 1);
             gl.tex_image_2d_with_u32_and_u32_and_html_image_element(
@@ -205,20 +220,34 @@ fn shader_trim(gl: GL, shader: &'static str) -> (&'static str, Option<WebGlTextu
             );
             gl.generate_mipmap(GL::TEXTURE_2D);
             gl.bind_texture(GL::TEXTURE_2D, None);
+            cloned_image_resolution[0].store(cloned_image.natural_width(), Ordering::SeqCst);
+            cloned_image_resolution[1].store(cloned_image.natural_height(), Ordering::SeqCst);
         })
         .forget();
         image.set_src(&path);
-        (&shader[first_line.len() + 1..], res_texture)
+        (
+            &shader[first_line.len() + 1..],
+            res_texture,
+            Some(image_resolution),
+        )
     } else {
-        (shader, None)
+        (shader, None, None)
     }
 }
 
-fn prepare_program(gl: &GL, shader: &'static str) -> (WebGlProgram, Option<WebGlTexture>) {
+fn prepare_program(
+    gl: &GL,
+    shader: &'static str,
+) -> (
+    WebGlProgram,
+    Option<WebGlTexture>,
+    Option<Arc<[AtomicU32; 2]>>,
+) {
     const VERTEX_SHADER: &str = "#version 300 es
 in vec3 position;void main(){gl_Position=vec4(position,1);}";
     const FRAMENT_SHADER_PREFIX: &str = "#version 300 es
-precision highp float;uniform vec3 iResolution;uniform float iTime;uniform sampler2D iChannel0;\
+precision highp float;uniform vec3 iResolution;uniform float iTime;\
+uniform sampler2D iChannel0;uniform vec3 iChannelResolution[1];\
 out vec4 outColor;void mainImage(out vec4,in vec2);void main(){mainImage(outColor,gl_FragCoord.xy);}";
 
     // vertex shader
@@ -232,7 +261,7 @@ out vec4 outColor;void mainImage(out vec4,in vec2);void main(){mainImage(outColo
     let frag_shader = gl
         .create_shader(GL::FRAGMENT_SHADER)
         .expect_throw("failed to create shader pointer");
-    let (shader, texture) = shader_trim(gl.clone(), shader);
+    let (shader, texture, texture_resolution) = shader_trim(gl.clone(), shader);
     let shader = String::from(FRAMENT_SHADER_PREFIX) + shader;
     gl.shader_source(&frag_shader, &shader);
     gl.compile_shader(&frag_shader);
@@ -245,7 +274,7 @@ out vec4 outColor;void mainImage(out vec4,in vec2);void main(){mainImage(outColo
     gl.attach_shader(&program, &frag_shader);
     gl.link_program(&program);
 
-    (program, texture)
+    (program, texture, texture_resolution)
 }
 
 fn init_gl(gl: &GL) {
@@ -264,13 +293,11 @@ fn init_gl(gl: &GL) {
         1, 2, 3,
     ];
 
-    // create vbo
     let vertex_buffer = gl.create_buffer();
     let vertex_buffer_js = js_sys::Float32Array::from(POSITIONS);
     gl.bind_buffer(GL::ARRAY_BUFFER, vertex_buffer.as_ref());
     gl.buffer_data_with_array_buffer_view(GL::ARRAY_BUFFER, &vertex_buffer_js, GL::STATIC_DRAW);
 
-    // create ibo
     let index_buffer = gl.create_buffer();
     let index_buffer_js = js_sys::Uint32Array::from(INDEX);
     gl.bind_buffer(GL::ELEMENT_ARRAY_BUFFER, index_buffer.as_ref());
@@ -281,7 +308,7 @@ fn init_gl(gl: &GL) {
     );
 }
 
-fn gl_rendering(gl: &GL, pipeline: &Pipeline, resolution: [f32; 2], time: f32) {
+fn gl_rendering(gl: &GL, pipeline: &mut Pipeline, resolution: [f32; 2], time: f32) {
     let Pipeline {
         program,
         position_location,
@@ -289,6 +316,8 @@ fn gl_rendering(gl: &GL, pipeline: &Pipeline, resolution: [f32; 2], time: f32) {
         time_location,
         texture_location,
         texture,
+        texture_resolution_location,
+        texture_resolution,
         ..
     } = pipeline;
     gl.use_program(Some(program));
@@ -300,11 +329,20 @@ fn gl_rendering(gl: &GL, pipeline: &Pipeline, resolution: [f32; 2], time: f32) {
         resolution_location.as_ref(),
         resolution[0],
         resolution[1],
-        0.0,
+        1.0,
     );
     gl.uniform1f(time_location.as_ref(), time * 0.001);
     gl.uniform1i(texture_location.as_ref(), 0);
+
     gl.bind_texture(GL::TEXTURE_2D, texture.as_ref());
+    if let Some(texture_resolution_ref) = &texture_resolution {
+        gl.uniform3f(
+            texture_resolution_location.as_ref(),
+            texture_resolution_ref[0].load(Ordering::SeqCst) as f32,
+            texture_resolution_ref[1].load(Ordering::SeqCst) as f32,
+            1.0,
+        );
+    }
 
     gl.clear(GL::COLOR_BUFFER_BIT);
     gl.draw_elements_with_i32(GL::TRIANGLES, 6, GL::UNSIGNED_INT, 0);
