@@ -1,5 +1,9 @@
 #iChannel0 "../dist/2f3c38f3d096272ba1629b9fd71b2dbeea8df59b516e3ec2385028dbf67e007c.jpg"
 
+// Voronoi effect shader
+// Copyright © 2022 Dr. Yoshinori Tanimura
+// MIT License (not include photograph)
+
 // Hash without Sine https://www.shadertoy.com/view/4djSRW
 vec2 hash23(vec3 p3) {
     p3 = fract(p3 * vec3(.1031, .1030, .0973));

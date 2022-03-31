@@ -29,7 +29,7 @@ Ruby, C++, C, D, Java, PostScript, VBA
 
 C#, Go, Javascript, Perl, PHP, Python, Scala, Swift, Typescript
 
-## Lisence
+## License
 
 - 応用情報技術者
 - データベーススペシャリスト
