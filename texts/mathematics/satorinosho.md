@@ -16,7 +16,7 @@
 
 ## 微分幾何学
 
-学部卒業と修士入学の間くらいに急いで勉強した。 Wolf の Spaces of Constant Curvature が教科書ということに一応なってる。
+学部卒業と修士入学の間くらいに急いで勉強した。 Wolf の Spaces of Constant Curvature が教科書ということに一応なっている。
 他には小林昭七のゲージ理論の本を参考にした。最後の対称空間の部分が不完全（´・ω・｀）　そのうち書き直す予定
 
 - [主束の接続](https://drive.google.com/file/d/0B2tz_MyG7hkeUy1UTTktTERfclE/view?usp=sharing)
@@ -24,7 +24,8 @@
 
 ## Lie代数
 
-修論にする結果が早めに出たので、ちゃんとした修論にしようと思って基本知識を勉強し始めて書いたもの。教科書はブルバキ。今後は Ado の定理や半単純リー代数の分類まで書きたい。いつになるやら（´・ω・｀）
+修論にする結果が早めに出たので、ちゃんとした修論にしようと思って基本知識を勉強し始めて書いたもの。
+教科書はブルバキ。今後は Ado の定理や半単純リー代数の分類まで書きたい。いつになるやら（´・ω・｀）
 
 - [基礎編](https://drive.google.com/file/d/0B2tz_MyG7hkeTXQ3MEZ1bTdSdm8/view?usp=sharing)
 

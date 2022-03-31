@@ -48,6 +48,7 @@ impl PipelineBuilder {
 #[derive(Debug)]
 pub struct BackGround {
     gl: Option<GL>,
+    shader_name: String,
     canvas: NodeRef,
     pipeline: Option<Pipeline>,
     pipeline_builder: Option<PipelineBuilder>,
@@ -55,14 +56,17 @@ pub struct BackGround {
     frame_count: u32,
 }
 
-fn get_shader() -> Option<&'static str> {
+fn get_shader_name() -> String {
     let location = gloo::utils::window().location();
     let raw_query = location.search().expect_throw("failed to get query");
     let query = qstring::QString::from(raw_query.as_str());
-    let hash = query.get("doc").unwrap_or("default");
+    query.get("doc").unwrap_or("default").to_string()
+}
+
+fn get_shader(shader_name: &str) -> Option<&'static str> {
     let shaders = shaders::get_texts();
     shaders
-        .get(&hash)
+        .get(&shader_name)
         .copied()
         .or_else(|| shaders.get(&"default").copied())
 }
@@ -74,6 +78,7 @@ impl Component for BackGround {
     fn create(_: &Context<Self>) -> Self {
         Self {
             gl: None,
+            shader_name: get_shader_name(),
             canvas: Default::default(),
             pipeline: None,
             pipeline_builder: None,
@@ -91,7 +96,7 @@ impl Component for BackGround {
         self.gl = { || canvas.get_context("webgl2").ok()??.dyn_into().ok() }();
         if let Some(gl) = &self.gl {
             init_gl(gl);
-            if let Some(shader) = get_shader() {
+            if let Some(shader) = get_shader(&self.shader_name) {
                 self.pipeline_builder = Some(PipelineBuilder::new(gl.clone(), shader));
             } else {
                 gloo::utils::window()
@@ -122,8 +127,8 @@ impl Component for BackGround {
                         gl.viewport(0, 0, canvas.width() as i32, canvas.height() as i32);
                     }
                 }
-                // 30 FPS
-                if self.frame_count % 2 == 0 {
+                // 30 FPS, profile is only allowed 60FPS
+                if self.frame_count % 2 == 0 || self.shader_name == "profile" {
                     let resolution = [canvas.width() as f32, canvas.height() as f32];
                     gl_rendering(gl, pipeline, resolution, timestamp as f32);
                 }
