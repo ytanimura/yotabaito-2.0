@@ -10,6 +10,11 @@ A shape processing kernel written in Rust.
 
 Crates for STEP (Standard for the Exchange of Product model data) written in pure Rust aimed at replacing stepcode.
 
+## About this page
+
+All contents of this page, include the web page design and background shader art, were created by me using [Trunk](https://trunkrs.dev/) and [Yew](https://yew.rs/).
+For more details, please visit GitHub page.
+
 ## Experience of programming langueges
 
 ### Use always

@@ -1,5 +1,5 @@
 // Random Primitives
-// Copyright © 2022 yotabaito
+// Copyright © 2022 Dr. Yoshinori Tanimura
 // Attribution 4.0 International (CC BY 4.0)
 
 /******************** Hash ********************/
