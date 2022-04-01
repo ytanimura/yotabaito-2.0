@@ -1,6 +1,6 @@
 #iChannel0 "../dist/codepage12.png"
 
-// Random Primitives
+// Binary exhition
 // Copyright © 2022 Dr. Yoshinori Tanimura
 // Attribution 4.0 International (CC BY 4.0)
 

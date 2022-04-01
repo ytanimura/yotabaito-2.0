@@ -5,6 +5,7 @@ use std::sync::{
 };
 use wasm_bindgen::JsCast;
 use web_sys::{WebGl2RenderingContext as GL, *};
+use js_sys::Date;
 
 mod shaders {
     include!(concat!(env!("OUT_DIR"), "/shaders.rs"));
@@ -54,13 +55,15 @@ pub struct BackGround {
     pipeline_builder: Option<PipelineBuilder>,
     render_loop: Option<gloo::render::AnimationFrame>,
     frame_count: u32,
+    init_time: f64,
 }
 
 fn get_shader_name() -> String {
-    let location = gloo::utils::window().location();
-    let raw_query = location.search().expect_throw("failed to get query");
-    let query = qstring::QString::from(raw_query.as_str());
-    query.get("doc").unwrap_or("default").to_string()
+    let query = Query::new();
+    query
+        .shader
+        .or(query.doc)
+        .unwrap_or_else(|| String::from("default"))
 }
 
 fn get_shader(shader_name: &str) -> Option<&'static str> {
@@ -76,6 +79,7 @@ impl Component for BackGround {
     type Properties = ();
 
     fn create(_: &Context<Self>) -> Self {
+        let date = Date::new(&Date::now().into());
         Self {
             gl: None,
             shader_name: get_shader_name(),
@@ -84,10 +88,12 @@ impl Component for BackGround {
             pipeline_builder: None,
             render_loop: None,
             frame_count: 0,
+            init_time: (date.get_minutes() * 60 + date.get_seconds()) as f64,
         }
     }
 
     fn view(&self, _: &Context<Self>) -> Html {
+        gloo::console::log!(self.init_time);
         html! { <canvas ref={ self.canvas.clone() } class="background"></canvas> }
     }
 
@@ -119,9 +125,9 @@ impl Component for BackGround {
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         let Msg::Render(timestamp) = msg;
-        let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
         match (&self.gl, &mut self.pipeline) {
             (Some(gl), Some(pipeline)) => {
+                let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
                 if correct_canvas_size(&canvas, pipeline.pixel_ratio) {
                     if let Some(gl) = &self.gl {
                         gl.viewport(0, 0, canvas.width() as i32, canvas.height() as i32);
@@ -130,7 +136,12 @@ impl Component for BackGround {
                 // 30 FPS, profile is only allowed 60FPS
                 if self.frame_count % 2 == 0 || self.shader_name == "profile" {
                     let resolution = [canvas.width() as f32, canvas.height() as f32];
-                    gl_rendering(gl, pipeline, resolution, timestamp as f32);
+                    gl_rendering(
+                        gl,
+                        pipeline,
+                        resolution,
+                        (self.init_time + timestamp * 0.001) as f32,
+                    );
                 }
                 self.frame_count += 1;
             }
@@ -336,7 +347,7 @@ fn gl_rendering(gl: &GL, pipeline: &mut Pipeline, resolution: [f32; 2], time: f3
         resolution[1],
         1.0,
     );
-    gl.uniform1f(time_location.as_ref(), time * 0.001);
+    gl.uniform1f(time_location.as_ref(), time);
     gl.uniform1i(texture_location.as_ref(), 0);
 
     gl.bind_texture(GL::TEXTURE_2D, texture.as_ref());

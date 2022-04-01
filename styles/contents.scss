@@ -7,48 +7,96 @@ $padding_height: 5vh;
 $height_margin: math.div(100vh - $contents_height - $padding_height * 2, 2);
 $width_margin: math.div(100vw - $contents_width - $padding_width * 2, 2);
 
+$logo_height: 5vw;
+$logo_width: $logo_height * 7.2;
+
 .contents {
-	width: $contents_width;
-	height: $contents_height;
+    height: $contents_height;
+    width: $contents_width;
+    padding: $padding_height $padding_width;
+    margin: $height_margin $width_margin;
 
-	padding-top: $padding_height;
-	padding-bottom: $padding_height;
-	padding-left: $padding_width;
-	padding-right: $padding_width;
+    display: block;
+    position: absolute;
+    z-index: 100;
 
-	margin-top: $height_margin;
-	margin-bottom: $height_margin;
-	margin-left: $width_margin;
-	margin-right: $width_margin;
+    overflow-y: auto;
 
-	display: block;
-	position: absolute;
-	z-index: 100;
-	
-	overflow-y: auto;
-	
-	background-color: rgba(#292d3e, 0.8);
-	scrollbar-color: #abb2bf #292d3e;
+    background-color: rgba(#292d3e, 0.8);
+    scrollbar-color: #abb2bf #292d3e;
 
-	color: #fffefe;
+    color: #fffefe;
 
-	h1 {
-		text-align: center;
-		font-size: 5em;
-		text-decoration: underline;
-	}
+    h1 {
+        text-align: center;
+        font-size: 5em;
+        text-decoration: underline;
+    }
 
-	h2 {
-		font-size: 1.5em;
-		text-decoration: underline;
-	}
+    h2 {
+        font-size: 1.5em;
+        text-decoration: underline;
+    }
 
-	a {
-		color: #CBCBEB;
-		text-decoration: underline;
-	}
+    a {
+        color: #CBCBEB;
+        text-decoration: underline;
+    }
 
-	li {
-		padding: 0.25em 0;
-	}
+    li {
+        padding: 0.25em 0;
+    }
+
+    .logo {
+        height: $logo_height;
+        width: $logo_width;
+        margin: 0 math.div($contents_width - $logo_width, 2);
+        margin-top: 5vh;
+        image-rendering: pixelated;
+    }
+
+    .catchcopy {
+        text-align: right;
+        margin: 0.5em math.div($contents_width - $logo_width, 2);
+        font-size: math.div($logo_height, 5);
+        font-family: fantasy;
+    }
+
+    .contents-top-menu {
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 5vh;
+        display: flex;
+
+        a {
+            text-decoration: none;
+            margin: 0 auto;
+
+            .contents-icon {
+                text-align: center;
+                width: 10vw;
+
+                border: solid 4px;
+                border-color: #000000;
+                border-radius: 0.5vw;
+
+                background-color: #abb2bf;
+
+                img {
+                    height: 10vw;
+                    width: 10vw;
+                    border-radius: 0.5vw 0.5vw 0 0;
+                    margin: 0;
+                }
+
+                p {
+                    font-weight: bold;
+                    font-size: 1vw;
+                    color: black;
+                    margin: 0;
+                }
+            }
+        }
+    }
 }

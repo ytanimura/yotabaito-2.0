@@ -9,6 +9,8 @@ use yew::prelude::*;
 
 mod background;
 mod contents;
+mod query;
+use query::Query;
 
 struct App;
 
@@ -27,5 +29,8 @@ impl Component for App {
 
 fn main() {
     console_error_panic_hook::set_once();
+    if let Some(doc) = Query::new().doc {
+        gloo::utils::document().set_title(&format!("yotabaito: {doc}"));
+    }
     yew::start_app::<App>();
 }

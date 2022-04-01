@@ -9,14 +9,14 @@ mod texts {
 }
 
 fn get_text() -> &'static str {
-    use qstring::QString;
-    let location = gloo::utils::window().location();
-    let raw_query = location.search().expect_throw("failed to get query");
-    let query = QString::from(raw_query.as_str());
-    let hash = query.get("doc").unwrap_or("profile");
-    texts::get_texts()
-        .get(&hash)
-        .unwrap_or(&"<h1>404 not found</h1>")
+    let hash = Query::new().doc;
+    if let Some(hash) = hash {
+        texts::get_texts()
+            .get(hash.as_str())
+            .unwrap_or(&"<h1>404 not found</h1>")
+    } else {
+        include_str!("top-contents.html")
+    }
 }
 
 impl Component for Contents {
@@ -30,7 +30,7 @@ impl Component for Contents {
     }
 
     fn view(&self, _: &Context<Self>) -> Html {
-        html! { <div class="contents" ref={ self.div.clone() }  /> }
+        html! { <div class="contents" ref={ self.div.clone() } /> }
     }
 
     fn rendered(&mut self, _: &Context<Self>, _: bool) {
