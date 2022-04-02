@@ -96,7 +96,7 @@ vec4 spilled(in vec2 U) {
         luminance(getColor(U + d.yx).xyz) - luminance(getColor(U - d.yx).xyz)
     ) / d.x;
 
-    vec3 n = normalize(vec3(grad, 150.0));
+    vec3 n = normalize(vec3(-grad, 150.0));
     vec3 light = normalize(vec3(cos(iTime), sin(iTime), 2));
     float diff = clamp(dot(n, light), 0.5, 1.0);
     float spec = clamp(dot(reflect(light, n), vec3(0, 0, -1)), 0.0, 1.0);
@@ -114,6 +114,7 @@ vec4 contrast(in vec2 U) {
 void mainImage(out vec4 O, in vec2 U) {
     U /= iResolution.y;
     int h = int(iTime / 4.0) % 6;
+    h =5;
     switch (h) {
         case 0: O = voronoi(U); break;
         case 1: O = pointillism(U); break;
