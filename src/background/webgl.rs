@@ -87,7 +87,7 @@ fn set_texture(gl: GL, texture_url: &'static str) -> Option<TextureInfo> {
         cloned_image_resolution[1].store(cloned_image.natural_height(), Ordering::SeqCst);
     })
     .forget();
-    image.set_src(&texture_url);
+    image.set_src(texture_url);
     res_texture.map(|texture| TextureInfo {
         texture,
         resolution: image_resolution,

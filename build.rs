@@ -64,7 +64,7 @@ fn parse_shader(shader: String, hash: &str) -> String {
                     let path = Path::new(&line[12..line.len() - 1]);
                     let mut path = path.file_name().unwrap().to_str().unwrap();
                     if path == "selfie.jpg" {
-                        path = &hash;
+                        path = hash;
                     }
                     res += &format!("texture_url:Some(\"./{path}\"),source:\"");
                     first_line = false;
