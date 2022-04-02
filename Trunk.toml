@@ -12,13 +12,3 @@ command_arguments = [
     "-o",
     "./resources/codepage12.png",
 ]
-
-[[hooks]]
-stage = "pre_build"
-command = "curl"
-command_arguments = [
-    # my photograph, do not use another purpose!
-    "https://drive.google.com/uc?id=1CppW3rG8--B-MdkMSoGx-o2orEcjnqRD&export=download",
-    "-Lo",
-    "./resources/2f3c38f3d096272ba1629b9fd71b2dbeea8df59b516e3ec2385028dbf67e007c.jpg",
-]

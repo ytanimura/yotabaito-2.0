@@ -1,4 +1,4 @@
-#iChannel0 "../dist/2f3c38f3d096272ba1629b9fd71b2dbeea8df59b516e3ec2385028dbf67e007c.jpg"
+#iChannel0 "../resources/selfie.jpg"
 
 // Post effect assortment
 // Copyright © 2022 Dr. Yoshinori Tanimura
@@ -114,7 +114,6 @@ vec4 contrast(in vec2 U) {
 void mainImage(out vec4 O, in vec2 U) {
     U /= iResolution.y;
     int h = int(iTime / 4.0) % 6;
-    h =5;
     switch (h) {
         case 0: O = voronoi(U); break;
         case 1: O = pointillism(U); break;
