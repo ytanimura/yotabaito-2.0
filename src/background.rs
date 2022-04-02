@@ -1,11 +1,11 @@
 use crate::*;
+use js_sys::Date;
 use std::sync::{
     atomic::{AtomicU32, Ordering},
     Arc, Mutex,
 };
 use wasm_bindgen::JsCast;
 use web_sys::{WebGl2RenderingContext as GL, *};
-use js_sys::Date;
 
 mod shaders {
     include!(concat!(env!("OUT_DIR"), "/shaders.rs"));
