@@ -56,41 +56,6 @@ Ray cameraRay(in Camera camera, in vec2 uv) {
     axis[2] * axis[2] * (1.0 - cos(angle)) + cos(angle)\
 )
 
-float microfacet(vec3 normal, vec3 cameraDir, vec3 lightDir, float metal, float roughness) {
-    vec3 middle = normalize(cameraDir + lightDir);
-    float dotCN = clamp(-dot(cameraDir, normal), 0.0, 1.0);
-    float dotLN = clamp(-dot(lightDir, normal), 0.0, 1.0);
-    float dotNM = clamp(-dot(normal, middle), 0.0, 1.0);
-    float dotCM = clamp(dot(cameraDir, middle), 0.0, 1.0);
-    float alpha = roughness * roughness;
-    
-    // diffuse BRDF
-    float diffuse = 1.0 - metal;
-    
-    // microfacet distribution
-    float alpha2 = alpha * alpha;
-    float tmp = 1.0 - dotNM * dotNM * (1.0 - alpha2);
-    float distribution = alpha2 / (tmp * tmp);
-
-    // schlick approxy & geometric decay
-    float alp = alpha * 0.5;
-    float sal = dotLN / (dotLN * (1.0 - alp) + alp);
-    float sac = dotCN / (dotCN * (1.0 - alp) + alp);
-    float decay = sal * sac;
-
-    // fresnel
-    float c = 1.0 - dotCM;
-    c = c * c * c * c * c;
-    float fresnel = metal + (1.0 - metal) * c;
-
-    // specular BRDF
-    tmp = 4.0 * dotCN * dotLN;
-    float specular = distribution * decay / tmp * fresnel;
-    if (tmp < 0.0001) specular = 0.0;
-    
-    return (diffuse + specular) * dotLN;
-}
-
 /******************** SDFs ********************/
 // https://iquilezles.org/www/articles/distfunctions/distfunctions.htm
 
@@ -135,26 +100,25 @@ float sdOctahedron( vec3 p, float s) {
 }
 
 /******************** Main ********************/
-float preDist(in vec3 p, uint distId) {
+float preDist(in vec3 p, int distId) {
     switch (distId) {
-        case 0u: return sdSphere(p, 1.0);
-        case 1u: return sdTorus(p, vec2(0.8, 0.2));
-        case 2u: return sdBox(p - vec3(0,0.15,0), 1.0 / sqrt(2.0)) - 0.01;
-        case 3u: return length(vec2(max(sdStar5(p.xy, 1.0, 0.4), 0.0), max(abs(p.z) - 0.1, 0.0))) - 0.01;
-        case 4u: return sdOctahedron(p, 1.0);
-        default: return 1.0;
+        case 0: return sdSphere(p, 1.0);
+        case 1: return sdTorus(p, vec2(0.8, 0.2));
+        case 2: return sdBox(p - vec3(0,0.15,0), 1.0 / sqrt(2.0)) - 0.01;
+        case 3: return length(vec2(max(sdStar5(p.xy, 1.0, 0.4), 0.0), max(abs(p.z) - 0.1, 0.0))) - 0.01;
+        default: return sdOctahedron(p, 1.0);
     }
 }
 
 float sDist(in vec3 p) {
     float ft = fract(iTime / 5.0);
     float it = floor(iTime / 5.0);
-    uint distId = uint(hash11(it + 0.13) * 5.0);
+    int distId = int(hash11(it + 0.13) * 5.0);
     float dist = 0.0;
     if (ft < 0.9) {
         dist = preDist(p, distId);
     } else {
-        uint nextDistId = uint(hash11(it + 1.0 + 0.13) * 5.0);
+        int nextDistId = int(hash11(it + 1.0 + 0.13) * 5.0);
         dist = mix(
             preDist(p, distId),
             preDist(p, nextDistId),
@@ -173,7 +137,7 @@ vec3 calcNormal(in vec3 p) {
     ));
 }
 
-void mainImage0(out vec4 fragColor, vec2 fragCoord) {
+void mainImage(out vec4 fragColor, vec2 fragCoord) {
     vec3 pos = vec3(3.0 * sin(iTime), 1.25, 3.0 * cos(iTime));
     Camera camera = Camera(
         pos,
@@ -198,21 +162,5 @@ void mainImage0(out vec4 fragColor, vec2 fragCoord) {
         col = -dot(normal, ray.direction) * vec3(0.8, 0.9, 1.0);
     }
 
-    fragColor = vec4(col,1);
-}
-
-// smart anti-aliasing
-// reference: https://shadertoyunofficial.wordpress.com/2021/03/09/advanced-tricks/
-void mainImage(out vec4 O, in vec2 U) {
-    mainImage0(O, U);    
-    if (fwidth(length(O.xyz)) > 0.01) {
-        vec4 o;
-        for (int k = 0; k < 4; k++) {
-              mainImage0(o,U + (vec2(k % 2, k / 2) - 0.5) / 1.5);
-              O += o;
-        }
-        O /= 5.0;
-    }
-    O.xyz = pow(O.xyz, vec3(.4545));
-    O.w = 1.0;
+    fragColor = vec4(pow(col, vec3(.4545)),1);
 }

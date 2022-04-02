@@ -12,24 +12,6 @@ pub struct Pipeline {
     pub pixel_ratio: u32,
 }
 
-#[derive(Clone, Debug)]
-pub struct PipelineBuilder(Arc<Mutex<Option<Pipeline>>>);
-
-impl PipelineBuilder {
-    pub fn new(gl: GL, shader: ShaderSource) -> Self {
-        let arc = Arc::new(Mutex::new(None));
-        let cloned_arc = Arc::clone(&arc);
-        wasm_bindgen_futures::spawn_local(async move {
-            let pipeline = create_pipeline(&gl, shader);
-            *cloned_arc.lock().unwrap() = Some(pipeline);
-        });
-        Self(arc)
-    }
-    pub fn take(&self) -> Option<Pipeline> {
-        self.0.lock().unwrap().take()
-    }
-}
-
 #[derive(Clone, Copy, Debug)]
 pub struct ShaderSource {
     pub source: &'static str,
@@ -42,7 +24,7 @@ pub struct TextureInfo {
     resolution: Arc<[AtomicU32; 2]>,
 }
 
-fn create_pipeline(gl: &GL, shader: ShaderSource) -> Pipeline {
+pub fn create_pipeline(gl: &GL, shader: ShaderSource) -> Pipeline {
     let (program, texture) = prepare_program(gl, shader);
     Pipeline {
         position_location: gl.get_attrib_location(&program, "position") as u32,
@@ -162,7 +144,7 @@ pub fn init_gl(gl: &GL) {
     );
 }
 
-pub fn gl_rendering(gl: &GL, pipeline: &mut Pipeline, resolution: [f32; 2], time: f32) {
+pub fn gl_rendering(gl: &GL, pipeline: &Pipeline, resolution: [f32; 2], time: f32) {
     let Pipeline {
         program,
         position_location,

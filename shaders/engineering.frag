@@ -1,4 +1,4 @@
-#iChannel0 "../dist/codepage12.png"
+#iChannel0 "../resources/codepage12.png"
 
 // Binary exhition
 // Copyright © 2022 Dr. Yoshinori Tanimura

@@ -2,7 +2,7 @@ use crate::*;
 use js_sys::Date;
 use std::sync::{
     atomic::{AtomicU32, Ordering},
-    Arc, Mutex,
+    Arc,
 };
 use wasm_bindgen::JsCast;
 use web_sys::{WebGl2RenderingContext as GL, *};
@@ -12,7 +12,7 @@ mod shaders {
     include!(concat!(env!("OUT_DIR"), "/shaders.rs"));
 }
 mod webgl;
-use webgl::*;
+use webgl::{Pipeline, ShaderSource};
 
 pub enum Msg {
     Render(f64),
@@ -24,7 +24,6 @@ pub struct BackGround {
     shader_name: String,
     canvas: NodeRef,
     pipeline: Option<Pipeline>,
-    pipeline_builder: Option<PipelineBuilder>,
     render_loop: Option<gloo::render::AnimationFrame>,
     frame_count: u32,
     init_time: f64,
@@ -57,7 +56,6 @@ impl Component for BackGround {
             shader_name: get_shader_name(),
             canvas: Default::default(),
             pipeline: None,
-            pipeline_builder: None,
             render_loop: None,
             frame_count: 0,
             init_time: (date.get_minutes() * 60 + date.get_seconds()) as f64,
@@ -72,9 +70,11 @@ impl Component for BackGround {
         let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
         self.gl = { || canvas.get_context("webgl2").ok()??.dyn_into().ok() }();
         if let Some(gl) = &self.gl {
-            init_gl(gl);
+            webgl::init_gl(gl);
             if let Some(shader) = get_shader(&self.shader_name) {
-                self.pipeline_builder = Some(PipelineBuilder::new(gl.clone(), shader));
+                gloo::console::log!("pipeline init");
+                self.pipeline = Some(webgl::create_pipeline(gl, shader));
+                gloo::console::log!("pipeline inited");
             } else {
                 gloo::utils::window()
                     .alert_with_message("failed to load shader")
@@ -96,33 +96,24 @@ impl Component for BackGround {
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         let Msg::Render(timestamp) = msg;
-        match (&self.gl, &mut self.pipeline) {
-            (Some(gl), Some(pipeline)) => {
-                let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
-                if correct_canvas_size(&canvas, pipeline.pixel_ratio) {
-                    if let Some(gl) = &self.gl {
-                        gl.viewport(0, 0, canvas.width() as i32, canvas.height() as i32);
-                    }
+        if let (Some(gl), Some(pipeline)) = (&self.gl, &self.pipeline) {
+            let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
+            if correct_canvas_size(&canvas, pipeline.pixel_ratio) {
+                if let Some(gl) = &self.gl {
+                    gl.viewport(0, 0, canvas.width() as i32, canvas.height() as i32);
                 }
-                // 30 FPS, profile is only allowed 60FPS
-                if self.frame_count % 2 == 0 || self.shader_name == "profile" {
-                    let resolution = [canvas.width() as f32, canvas.height() as f32];
-                    gl_rendering(
-                        gl,
-                        pipeline,
-                        resolution,
-                        (self.init_time + timestamp * 0.001) as f32,
-                    );
-                }
-                self.frame_count += 1;
             }
-            (Some(_), None) => {
-                self.pipeline = self
-                    .pipeline_builder
-                    .as_ref()
-                    .and_then(PipelineBuilder::take);
+            // 30 FPS, profile is only allowed 60FPS
+            if self.frame_count % 2 == 0 || self.shader_name == "profile" {
+                let resolution = [canvas.width() as f32, canvas.height() as f32];
+                webgl::gl_rendering(
+                    gl,
+                    pipeline,
+                    resolution,
+                    (self.init_time + timestamp * 0.001) as f32,
+                );
             }
-            _ => {}
+            self.frame_count += 1;
         }
         self.set_render_loop(ctx);
         false
