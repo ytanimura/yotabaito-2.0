@@ -23,13 +23,24 @@ impl Component for App {
     }
 
     fn view(&self, _: &Context<Self>) -> Html {
-        html! { <><contents::Contents /><background::BackGround /></> }
+        let query = Query::from_location();
+        let doc_name = query.doc.clone();
+        let shader_name = query
+            .shader
+            .or(query.doc)
+            .unwrap_or_else(|| String::from("default"));
+        html! {
+            <>
+            <contents::Contents doc_name={ doc_name } />
+            <background::BackGround shader_name={ shader_name } />
+            </>
+        }
     }
 }
 
 fn main() {
     console_error_panic_hook::set_once();
-    if let Some(doc) = Query::new().doc {
+    if let Some(doc) = Query::from_location().doc {
         gloo::utils::document().set_title(&format!("yotabaito: {doc}"));
     }
     yew::start_app::<App>();

@@ -21,7 +21,6 @@ pub enum Msg {
 #[derive(Debug)]
 pub struct BackGround {
     gl: Option<GL>,
-    shader_name: String,
     canvas: NodeRef,
     pipeline: Option<Pipeline>,
     render_loop: Option<gloo::render::AnimationFrame>,
@@ -29,12 +28,9 @@ pub struct BackGround {
     init_time: f64,
 }
 
-fn get_shader_name() -> String {
-    let query = Query::new();
-    query
-        .shader
-        .or(query.doc)
-        .unwrap_or_else(|| String::from("default"))
+#[derive(Clone, Debug, PartialEq, Properties)]
+pub struct Prop {
+    pub shader_name: String,
 }
 
 fn get_shader(shader_name: &str) -> Option<ShaderSource> {
@@ -47,13 +43,12 @@ fn get_shader(shader_name: &str) -> Option<ShaderSource> {
 
 impl Component for BackGround {
     type Message = Msg;
-    type Properties = ();
+    type Properties = Prop;
 
     fn create(_: &Context<Self>) -> Self {
         let date = Date::new(&Date::now().into());
         Self {
             gl: None,
-            shader_name: get_shader_name(),
             canvas: Default::default(),
             pipeline: None,
             render_loop: None,
@@ -69,9 +64,10 @@ impl Component for BackGround {
     fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
         let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
         self.gl = { || canvas.get_context("webgl2").ok()??.dyn_into().ok() }();
+        let shader_name = &ctx.props().shader_name;
         if let Some(gl) = &self.gl {
             webgl::init_gl(gl);
-            if let Some(shader) = get_shader(&self.shader_name) {
+            if let Some(shader) = get_shader(shader_name) {
                 gloo::console::log!("pipeline init");
                 self.pipeline = Some(webgl::create_pipeline(gl, shader));
                 gloo::console::log!("pipeline inited");
@@ -98,13 +94,14 @@ impl Component for BackGround {
         let Msg::Render(timestamp) = msg;
         if let (Some(gl), Some(pipeline)) = (&self.gl, &self.pipeline) {
             let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
+            let shader_name = &ctx.props().shader_name;
             if correct_canvas_size(&canvas, pipeline.pixel_ratio) {
                 if let Some(gl) = &self.gl {
                     gl.viewport(0, 0, canvas.width() as i32, canvas.height() as i32);
                 }
             }
             // 30 FPS, profile is only allowed 60FPS
-            if self.frame_count % 2 == 0 || self.shader_name == "profile" {
+            if self.frame_count % 2 == 0 || shader_name == "profile" {
                 let resolution = [canvas.width() as f32, canvas.height() as f32];
                 webgl::gl_rendering(
                     gl,

@@ -7,7 +7,7 @@ pub struct Query {
 }
 
 impl Query {
-    pub fn new() -> Query {
+    pub fn from_location() -> Query {
         use qstring::QString;
         let location = gloo::utils::window().location();
         let raw_query = location.search().expect_throw("failed to get query");
