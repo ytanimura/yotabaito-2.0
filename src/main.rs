@@ -24,16 +24,21 @@ impl Component for App {
 
     fn view(&self, _: &Context<Self>) -> Html {
         let query = Query::from_location();
-        let doc_name = query.doc.clone();
-        let shader_name = query
-            .shader
-            .or(query.doc)
-            .unwrap_or_else(|| String::from("default"));
-        html! {
-            <>
-            <contents::Contents doc_name={ doc_name } />
-            <background::BackGround shader_name={ shader_name } />
-            </>
+        if query.doc.as_deref() == Some("none") {
+            let shader_name = query.shader.unwrap_or_else(|| String::from("default"));
+            html! { <background::BackGround shader_name={ shader_name } /> }
+        } else {
+            let doc_name = query.doc.clone();
+            let shader_name = query
+                .shader
+                .or(query.doc)
+                .unwrap_or_else(|| String::from("default"));
+            html! {
+                <>
+                <iframe class="background" src={ format!("./index.html?doc=none&shader={shader_name}") } />
+                <contents::Contents doc_name={ doc_name } />
+                </>
+            }
         }
     }
 }
