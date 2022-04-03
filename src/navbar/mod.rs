@@ -68,10 +68,10 @@ impl Component for NavBar {
         opacity = match self.cursored.load(Ordering::SeqCst) {
             true => opacity + deltime * 2.0,
             false => {
-                opacity + (smoothstep(0.0, 1.0, opacity - deltime) - smoothstep(0.0, 1.0, opacity))
+                opacity + (smoothstep(0.19, 1.0, opacity - deltime) - smoothstep(0.19, 1.0, opacity))
             }
         };
-        opacity = f64::clamp((opacity - 0.001) / 0.999, 0.0, 1.0);
+        opacity = f64::clamp(opacity, 0.2, 1.0);
         let _ = style.set_property("opacity", &format!("{opacity}"));
 
         self.previous = timestamp;
