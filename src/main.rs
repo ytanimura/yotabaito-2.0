@@ -5,8 +5,8 @@
 static ALLOC: wee_alloc::WeeAlloc<'_> = wee_alloc::WeeAlloc::INIT;
 
 use wasm_bindgen::UnwrapThrowExt;
-use yew::prelude::*;
 use web_sys::*;
+use yew::prelude::*;
 
 mod background;
 mod contents;
