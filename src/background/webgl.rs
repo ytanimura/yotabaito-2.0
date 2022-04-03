@@ -1,4 +1,5 @@
 use super::*;
+use WebGl2RenderingContext as GL;
 
 #[derive(Clone, Debug)]
 pub struct Pipeline {

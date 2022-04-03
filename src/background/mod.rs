@@ -5,7 +5,6 @@ use std::sync::{
     Arc,
 };
 use wasm_bindgen::JsCast;
-use web_sys::{WebGl2RenderingContext as GL, *};
 
 mod shaders {
     use super::ShaderSource;
@@ -20,7 +19,7 @@ pub enum Msg {
 
 #[derive(Debug)]
 pub struct BackGround {
-    gl: Option<GL>,
+    gl: Option<WebGl2RenderingContext>,
     canvas: NodeRef,
     pipeline: Option<Pipeline>,
     render_loop: Option<gloo::render::AnimationFrame>,
@@ -29,7 +28,7 @@ pub struct BackGround {
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct Prop {
+pub struct Props {
     pub shader_name: String,
 }
 
@@ -43,7 +42,7 @@ fn get_shader(shader_name: &str) -> Option<ShaderSource> {
 
 impl Component for BackGround {
     type Message = Msg;
-    type Properties = Prop;
+    type Properties = Props;
 
     fn create(_: &Context<Self>) -> Self {
         let date = Date::new(&Date::now().into());
@@ -68,9 +67,7 @@ impl Component for BackGround {
         if let Some(gl) = &self.gl {
             webgl::init_gl(gl);
             if let Some(shader) = get_shader(shader_name) {
-                gloo::console::log!("pipeline init");
                 self.pipeline = Some(webgl::create_pipeline(gl, shader));
-                gloo::console::log!("pipeline inited");
             } else {
                 gloo::utils::window()
                     .alert_with_message("failed to load shader")

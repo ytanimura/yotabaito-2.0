@@ -1,0 +1,44 @@
+@use "sass:math";
+
+$navbar_height: 70px;
+$logo_height: 50px;
+$logo_width: $logo_height * 7.2;
+$logo_margin_height: math.div($navbar_height - $logo_height, 2);
+
+$text_icon_font: 20px;
+
+.navbar {
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: $navbar_height;
+    position: fixed;
+    z-index: 10;
+    opacity: 1;
+
+    display: flex;
+    align-items: flex-end;
+    background-color: #FCFCFC;
+
+    .logo {
+        height: $logo_height;
+        width: $logo_width;
+        vertical-align: bottom;
+        margin: $logo_margin_height 20px;
+        image-rendering: pixelated;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .text-icon {
+        color: black;
+        margin: $logo_margin_height 5px;
+        padding: 0 5px;
+        font-weight: bolder;
+        font-size: $text_icon_font;
+        border: solid;
+        border-radius: 5px;
+    }
+}

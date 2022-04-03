@@ -1,12 +1,12 @@
 use crate::*;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct Contents {
     div: NodeRef,
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct Prop {
+pub struct Props {
     pub doc_name: Option<String>,
 }
 
@@ -26,12 +26,10 @@ fn get_text(hash: Option<&str>) -> &'static str {
 
 impl Component for Contents {
     type Message = ();
-    type Properties = Prop;
+    type Properties = Props;
 
     fn create(_: &Context<Self>) -> Self {
-        Self {
-            div: Default::default(),
-        }
+        Default::default()
     }
 
     fn view(&self, _: &Context<Self>) -> Html {
@@ -39,7 +37,7 @@ impl Component for Contents {
     }
 
     fn rendered(&mut self, ctx: &Context<Self>, _: bool) {
-        let div = self.div.cast::<web_sys::HtmlDivElement>().unwrap();
+        let div = self.div.cast::<HtmlDivElement>().unwrap();
         div.set_inner_html(get_text(ctx.props().doc_name.as_deref()));
     }
 }
