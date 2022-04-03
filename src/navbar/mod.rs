@@ -52,7 +52,7 @@ impl Component for NavBar {
 
     fn update(&mut self, ctx: &Context<Self>, msg: Msg) -> bool {
         let Msg::Render(timestamp) = msg;
-        if timestamp < 1000.0 {
+        if timestamp < 5000.0 {
             self.previous = timestamp;
             self.send_render_message(ctx);
             return false;
