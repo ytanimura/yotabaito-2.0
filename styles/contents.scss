@@ -11,14 +11,14 @@ $logo_height: 5vw;
 $logo_width: $logo_height * 7.2;
 
 .contents {
-    height: $contents_height;
+    min-height: $contents_height;
     width: $contents_width;
     padding: $padding_height $padding_width;
     margin: $height_margin $width_margin;
 
     display: block;
     position: absolute;
-    z-index: 100;
+    z-index: 10;
 
     overflow-y: auto;
 
