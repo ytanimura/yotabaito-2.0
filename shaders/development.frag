@@ -6,7 +6,7 @@
 
 const float PI = 3.141592653;
 
-const float DOT_RESOLUTION = 48.0;
+const float NUM_SIZE = 12.0;
 
 // Hash without Sine https://www.shadertoy.com/view/4djSRW
 vec2 hash21(float p) {
@@ -55,7 +55,7 @@ int message(in vec2 uv) {
 }
 
 int picture(in ivec2 iuv) {
-    vec2 uv = vec2(iuv) / DOT_RESOLUTION;
+    vec2 uv = vec2(iuv) * (2.0 * NUM_SIZE) / iResolution.y;
     float time = iTime / 4.0;
     vec2 rand = hash21(floor(time));
     int idx = int(rand.x * 5.0);
@@ -78,7 +78,7 @@ float letter(in vec2 uv, in int code) {
 
 void mainImage(out vec4 O, in vec2 U) {
     vec2 r = iResolution.xy;
-    vec2 uv = DOT_RESOLUTION * (U + U - r) / r.y + vec2(.5, 0);
+    vec2 uv = (U + U - r) / (2.0 * NUM_SIZE) + vec2(.5, 0);
     int code = picture(ivec2(floor(uv)));
     float c = letter(fract(uv), code);
     O = vec4(c * c * c, c, c * c, 1);
