@@ -37,6 +37,7 @@ impl Component for App {
                 <>
                 <navbar::NavBar />
                 <contents::Contents doc_name={ doc_name } />
+                <div class="copyright">{ "Copyright © 2022 YOSHINORI TANIMURA, All right reserved." }</div>
                 <iframe class="background" src={ format!("./index.html?doc=none&shader={shader_name}") } />
                 </>
             }

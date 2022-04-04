@@ -18,7 +18,8 @@ fn get_text(hash: Option<&str>) -> &'static str {
     if let Some(hash) = hash {
         texts::get_texts()
             .get(hash)
-            .unwrap_or(&"<h1>404 not found</h1>")
+            .copied()
+            .unwrap_or("<h1>404 not found</h1>")
     } else {
         include_str!("top-contents.html")
     }
@@ -33,11 +34,12 @@ impl Component for Contents {
     }
 
     fn view(&self, _: &Context<Self>) -> Html {
-        html! { <div class="contents" ref={ self.div.clone() } /> }
+        html! { <div class="outer_box"><div class="contents" ref={ self.div.clone() } /></div> }
     }
 
     fn rendered(&mut self, ctx: &Context<Self>, _: bool) {
         let div = self.div.cast::<HtmlDivElement>().unwrap();
-        div.set_inner_html(get_text(ctx.props().doc_name.as_deref()));
+        let text = get_text(ctx.props().doc_name.as_deref());
+        div.set_inner_html(text);
     }
 }
