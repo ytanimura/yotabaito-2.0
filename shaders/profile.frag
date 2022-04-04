@@ -10,6 +10,11 @@ vec2 hash23(vec3 p3) {
     p3 += dot(p3, p3.yzx+33.33);
     return fract((p3.xx+p3.yz)*p3.zy);
 }
+float hash12(vec2 p) {
+    vec3 p3  = fract(vec3(p.xyx) * .1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
+}
 
 vec4 getColor(in vec2 U) {
     U.x = (U.x - 0.5 * iResolution.x / iResolution.y)
@@ -88,19 +93,31 @@ vec4 color64(in vec2 U) {
     return vec4(col, 1);
 }
 
+vec2 noiseDeform(in vec2 U) {
+    vec2 e = vec2(1, 0), iu = floor(U * 100.0), fu = fract(U * 100.0);
+    float noise = mix(
+        mix(hash12(iu       ), hash12(iu + e.xy), fu.x),
+        mix(hash12(iu + e.yx), hash12(iu + e.yy), fu.x),
+        fu.y
+    );
+    return U + (2.0 * noise - 1.0) / 500.0;
+}
+
 // https://www.shadertoy.com/view/MsGSRd
 vec4 oil(in vec2 U) {
     vec2 d = vec2(1, 0) / iResolution.y;
     vec2 grad = vec2(
-        luminance(getColor(U + d.xy).xyz) - luminance(getColor(U - d.xy).xyz),
-        luminance(getColor(U + d.yx).xyz) - luminance(getColor(U - d.yx).xyz)
+        luminance(getColor(noiseDeform(U + d.xy)).xyz)
+            - luminance(getColor(noiseDeform(U - d.xy)).xyz),
+        luminance(getColor(noiseDeform(U + d.yx)).xyz)
+            - luminance(getColor(noiseDeform(U - d.yx)).xyz)
     ) / d.x;
 
     vec3 n = normalize(vec3(-grad, 150.0));
     vec3 light = normalize(vec3(cos(iTime), sin(iTime), 2));
     float diff = clamp(dot(n, light), 0.5, 1.0);
     float spec = clamp(dot(reflect(light, n), vec3(0, 0, -1)), 0.0, 1.0);
-    spec = pow(spec, 36.0) * 2.5;
+    spec = pow(spec, 36.0) * 2.0;
 	return vec4(clamp(getColor(U).xyz * diff + spec, 0.0, 1.0), 1);
 }
 
