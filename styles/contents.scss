@@ -1,21 +1,21 @@
 @use "sass:math";
+@import "header.scss";
 
-$contents_width: 1200px;
-$padding_width: 128px;
-$padding_height: 72px;
-
-$logo_height: 120px;
-$logo_width: $logo_height * 7.2;
+$contents_logo_width: $contents_logo_height * $logo_aspect;
+$contents_logo_margin: math.div($contents_width - $contents_logo_width, 2);
 
 .outer_box {
-    z-index: 10;
+    z-index: $contents_z;
     display: block;
     margin: 0 auto;
 
     .contents {
         width: $contents_width;
-        padding: $padding_height $padding_width $padding_height * 2 $padding_width;
-        margin: 140px auto;
+        padding: $contents_padding_height
+            $contents_padding_width
+            ($contents_padding_height * 2)
+            $contents_padding_width;
+        margin: ($navbar_height * 2) auto;
         display: block;
 
         background-color: rgba(#292d3e, 0.8);
@@ -42,55 +42,56 @@ $logo_width: $logo_height * 7.2;
         }
 
         .logo {
-            height: $logo_height;
-            width: $logo_width;
-            margin: 0 math.div($contents_width - $logo_width, 2);
+            display: block;
+            height: $contents_logo_height;
+            width: $contents_logo_height * $logo_aspect;
+            margin: 0 auto;
             margin-top: 5vh;
             image-rendering: pixelated;
         }
 
         .catchcopy {
             text-align: right;
-            margin: 0.5em math.div($contents_width - $logo_width, 2);
-            font-size: math.div($logo_height, 5);
+            margin: 0.5em $contents_logo_margin;
+            font-size: math.div($contents_logo_height, 5);
             font-family: fantasy;
         }
 
         .contents-top-menu {
             text-align: center;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 72px;
+            margin: 72px auto 0 auto;
             display: flex;
             flex-wrap: wrap;
 
             a {
                 text-decoration: none;
                 margin: 0 auto;
-                margin-bottom: 72px;
             }
 
             .contents-icon {
                 text-align: center;
-                width: 256px;
+                width: $contents_icon_size;
 
                 border: solid 4px;
                 border-color: #000000;
-                border-radius: 13px;
+                border-radius: math.div($contents_icon_font_size, 2);
                 display: inline-block;
 
                 background-color: #abb2bf;
 
                 img {
-                    height: 256px;
-                    width: 256px;
-                    border-radius: 13px 13px 0 0;
+                    height: $contents_icon_size;
+                    width: $contents_icon_size;
+                    border-radius: math.div($contents_icon_font_size, 2)
+                        math.div($contents_icon_font_size, 2)
+                        0
+                        0;
                     margin: 0;
                 }
 
                 p {
                     font-weight: bold;
-                    font-size: 26px;
+                    font-size: $contents_icon_font_size;
                     color: black;
                     margin: 0;
                 }

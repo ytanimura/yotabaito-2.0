@@ -1,11 +1,7 @@
 @use "sass:math";
+@import "header.scss";
 
-$navbar_height: 70px;
-$logo_height: 50px;
-$logo_width: $logo_height * 7.2;
-$logo_margin_height: math.div($navbar_height - $logo_height, 2);
-
-$text_icon_font: 20px;
+$logo_margin: math.div($navbar_height - $navbar_logo_height, 2);
 
 .navbar {
     top: 0;
@@ -13,18 +9,19 @@ $text_icon_font: 20px;
     width: 100vw;
     height: $navbar_height;
     position: fixed;
-    z-index: 20;
-    opacity: 1;
+    z-index: $navbar_z;
 
     display: flex;
     align-items: flex-end;
     background-color: #FCFCFC;
+    
+    opacity: 1;
 
     .logo {
-        height: $logo_height;
-        width: $logo_width;
+        height: $navbar_logo_height;
+        width: $navbar_logo_height * $logo_aspect;
+        margin: $logo_margin $navbar_logo_margin_width;
         vertical-align: bottom;
-        margin: $logo_margin_height 20px;
         image-rendering: pixelated;
     }
 
@@ -33,12 +30,15 @@ $text_icon_font: 20px;
     }
 
     .text-icon {
+        padding: 0 $navbar_logo_padding;
+        margin: $logo_margin $navbar_logo_padding;
+
         color: black;
-        margin: $logo_margin_height 5px;
-        padding: 0 5px;
+
+        font-size: $navbar_text_icon_font;
         font-weight: bolder;
-        font-size: $text_icon_font;
+
         border: solid;
-        border-radius: 5px;
+        border-radius: $navbar_logo_padding;
     }
 }
