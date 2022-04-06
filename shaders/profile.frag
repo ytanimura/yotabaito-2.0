@@ -128,15 +128,22 @@ vec4 contrast(in vec2 U) {
     return vec4(col, 1);
 }
 
+#ifdef BONUS_TRACK
 void mainImage(out vec4 O, in vec2 U) {
     U /= iResolution.y;
-    int h = int(iTime / 4.0) % 4;
+    int h = int(iTime / 4.0) % 6;
     switch (h) {
         case 0: O = voronoi(U); break;
         case 1: O = pointillism(U); break;
         case 2: O = laplacianFilter(U); break;
-        //case 3: O = color64(U); break;
-        //case 4: O = contrast(U); break;
+        case 3: O = color64(U); break;
+        case 4: O = contrast(U); break;
         default: O = oil(U); break;
     }
 }
+#else
+void mainImage(out vec4 O, in vec2 U) {
+    U /= iResolution.y;
+    O = voronoi(U);
+}
+#endif

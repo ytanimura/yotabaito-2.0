@@ -225,7 +225,7 @@ void mainImage0(out vec4 O, in vec2 U) {
             mat3 mat = rotate3D(axis, iTime + rand.y);
             Ray ray0 = Ray(
                 mat * (ray.origin - floor(p) - 0.5),
-                mat * ray.direction
+                normalize(mat * ray.direction)
             );
             dist = roundedboxIntersect(ray0, vec3(0.15), 0.02);
         }

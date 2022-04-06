@@ -105,7 +105,7 @@ float preDist(in vec3 p, int distId) {
         case 0: return sdSphere(p, 1.0);
         case 1: return sdTorus(p, vec2(0.8, 0.2));
         case 2: return sdBox(p - vec3(0,0.15,0), 1.0 / sqrt(2.0)) - 0.01;
-        case 3: return length(vec2(max(sdStar5(p.xy, 0.95, 0.4), 0.0), max(abs(p.z) - 0.1, 0.0))) - 0.01;
+        case 3: return length(vec2(max(sdStar5(p.xy, 1.0, 0.4), 0.0), max(abs(p.z) - 0.1, 0.0))) - 0.01;
         default: return sdOctahedron(p, 1.0);
     }
 }
@@ -138,7 +138,7 @@ vec3 calcNormal(in vec3 p) {
 }
 
 void mainImage(out vec4 fragColor, vec2 fragCoord) {
-    vec3 pos = vec3(3.0 * sin(iTime), 1.25, 3.0 * cos(iTime));
+    vec3 pos = vec3(2.5 * sin(iTime), 1.25, 2.5 * cos(iTime));
     Camera camera = Camera(
         pos,
         -normalize(pos),
