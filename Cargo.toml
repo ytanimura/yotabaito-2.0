@@ -24,6 +24,7 @@ web-sys = { version = "0.3.56", features = [
 	"HtmlDivElement",
 	"HtmlImageElement",
 	"Location",
+	"Navigator",
 	"WebGl2RenderingContext",
 	"WebGlBuffer",
 	"WebGlProgram",

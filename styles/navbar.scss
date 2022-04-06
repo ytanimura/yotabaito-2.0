@@ -1,7 +1,4 @@
-@use "sass:math";
-@import "header.scss";
-
-$logo_margin: math.div($navbar_height - $navbar_logo_height, 2);
+$navbar_logo_margin: math.div($navbar_height - $navbar_logo_height, 2);
 
 .navbar {
     top: 0;
@@ -20,7 +17,7 @@ $logo_margin: math.div($navbar_height - $navbar_logo_height, 2);
     .logo {
         height: $navbar_logo_height;
         width: $navbar_logo_height * $logo_aspect;
-        margin: $logo_margin $navbar_logo_margin_width;
+        margin: $navbar_logo_margin $navbar_logo_margin_width;
         vertical-align: bottom;
         image-rendering: pixelated;
     }
@@ -31,7 +28,7 @@ $logo_margin: math.div($navbar_height - $navbar_logo_height, 2);
 
     .text-icon {
         padding: 0 $navbar_logo_padding;
-        margin: $logo_margin $navbar_logo_padding;
+        margin: $navbar_logo_margin $navbar_logo_padding;
 
         color: black;
 

@@ -1,0 +1,33 @@
+@use "sass:math";
+
+// logo is 74 x 10
+$logo_aspect: 7.4;
+
+$navbar_height: 40px;
+$navbar_logo_height: 25px;
+$navbar_logo_margin_width: 10px;
+$navbar_text_icon_font: 10px;
+$navbar_logo_padding: 2px;
+
+$contents_width: 80vw;
+$contents_padding_width: 25px;
+$contents_padding_height: 10px;
+
+$contents_logo_height: 9vw;
+$contents_icon_size: 30vw;
+$contents_icon_font_size: 3vw;
+$contents_icon_margin_height: 2.5vh;
+
+$navbar_z: 20;
+$contents_z: 10;
+$background_z: -10;
+
+$h1_align: left;
+$h1font_size: 2em;
+
+.mobile {
+    @import "index.scss";
+    @import "background.scss";
+    @import "contents.scss";
+    @import "navbar.scss";
+}

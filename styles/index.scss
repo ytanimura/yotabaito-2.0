@@ -1,5 +1,3 @@
-@import "header.scss";
-
 body {
     padding: 0;
     margin: 0;
@@ -18,5 +16,6 @@ body {
     color: #000000;
     background-color: #FCFCFC;
     bottom: 0;
+    overflow: hidden;
     position: fixed;
 }

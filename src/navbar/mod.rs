@@ -18,7 +18,9 @@ pub enum Msg {
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
-pub struct Props {}
+pub struct Props {
+    pub rarefaction: bool,
+}
 
 impl Component for NavBar {
     type Message = Msg;
@@ -51,6 +53,9 @@ impl Component for NavBar {
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Msg) -> bool {
+        if !ctx.props().rarefaction {
+            return false;
+        }
         let Msg::Render(timestamp) = msg;
         if timestamp < 5000.0 {
             self.previous = timestamp;
