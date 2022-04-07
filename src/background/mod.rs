@@ -30,6 +30,7 @@ pub struct BackGround {
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct Props {
     pub shader_name: String,
+    pub reflex_date_time: bool,
 }
 
 fn get_shader(shader_name: &str) -> Option<ShaderSource> {
@@ -44,15 +45,21 @@ impl Component for BackGround {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(_: &Context<Self>) -> Self {
-        let date = Date::new(&Date::now().into());
+    fn create(ctx: &Context<Self>) -> Self {
+        let init_time = match ctx.props().reflex_date_time {
+            true => {
+                let date = Date::new(&Date::now().into());
+                (date.get_minutes() * 60 + date.get_seconds()) as f64
+            }
+            false => 0.0,
+        };
         Self {
             gl: None,
             canvas: Default::default(),
             pipeline: None,
             render_loop: None,
             frame_count: 0,
-            init_time: (date.get_minutes() * 60 + date.get_seconds()) as f64,
+            init_time,
         }
     }
 
