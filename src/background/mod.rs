@@ -25,6 +25,7 @@ pub struct BackGround {
     render_loop: Option<gloo::render::AnimationFrame>,
     frame_count: u32,
     init_time: f64,
+    previous_time: f64,
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
@@ -53,6 +54,7 @@ impl Component for BackGround {
             render_loop: None,
             frame_count: 0,
             init_time: (date.get_minutes() * 60 + date.get_seconds()) as f64,
+            previous_time: 0.0,
         }
     }
 
@@ -89,9 +91,15 @@ impl Component for BackGround {
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         let Msg::Render(timestamp) = msg;
-        if let (Some(gl), Some(pipeline)) = (&self.gl, &self.pipeline) {
+        if let (Some(gl), Some(pipeline)) = (&self.gl, &mut self.pipeline) {
             let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
             let shader_name = &ctx.props().shader_name;
+            if timestamp > 5000.0 {
+                let deltime = (timestamp - self.previous_time) * 0.001;
+                if deltime > 1.0 / 40.0 {
+                    pipeline.pixel_ratio = 2;
+                }
+            } 
             if correct_canvas_size(&canvas, pipeline.pixel_ratio) {
                 if let Some(gl) = &self.gl {
                     gl.viewport(0, 0, canvas.width() as i32, canvas.height() as i32);
@@ -108,6 +116,7 @@ impl Component for BackGround {
                 );
             }
             self.frame_count += 1;
+            self.previous_time = timestamp;
         }
         self.set_render_loop(ctx);
         false

@@ -68,17 +68,16 @@ fn from_mobile() -> bool {
 }
 
 fn set_title() {
-    let document = gloo::utils::document();
     if let Some(doc) = Query::from_location().doc {
+        let document = gloo::utils::document();
         document.set_title(&format!("yotabaito: {doc}"));
     }
 }
 
 fn set_html_class(from_mobile: bool) {
     let html = gloo::utils::document_element();
-    if from_mobile {
-        html.set_class_name("mobile");
-    } else {
-        html.set_class_name("pc");
+    match from_mobile {
+        true => html.set_class_name("mobile"),
+        false => html.set_class_name("pc"),
     }
 }

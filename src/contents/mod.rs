@@ -39,7 +39,6 @@ impl Component for Contents {
 
     fn rendered(&mut self, ctx: &Context<Self>, _: bool) {
         let div = self.div.cast::<HtmlDivElement>().unwrap();
-        let text = get_text(ctx.props().doc_name.as_deref());
-        div.set_inner_html(text);
+        div.set_inner_html(get_text(ctx.props().doc_name.as_deref()));
     }
 }
