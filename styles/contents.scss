@@ -38,6 +38,11 @@ $contents_logo_margin: math.div($contents_width - $contents_logo_width, 2);
             padding: 0.25em 0;
         }
 
+        iframe {
+            width: $contents_iframe_width;
+            height: $contents_iframe_height;
+        }
+
         .logo {
             display: block;
             height: $contents_logo_height;

@@ -4,7 +4,7 @@
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc<'_> = wee_alloc::WeeAlloc::INIT;
 
-use wasm_bindgen::{JsCast, UnwrapThrowExt};
+use wasm_bindgen::UnwrapThrowExt;
 use web_sys::*;
 use yew::prelude::*;
 
@@ -12,9 +12,8 @@ mod app;
 mod background;
 mod contents;
 mod navbar;
-use app::*;
 
 fn main() {
     console_error_panic_hook::set_once();
-    yew::start_app::<App>();
+    yew::start_app::<app::App>();
 }

@@ -18,6 +18,9 @@ $contents_icon_size: 256px;
 $contents_icon_font_size: 26px;
 $contents_icon_margin_height: 0;
 
+$contents_iframe_width: 560px;
+$contents_iframe_height: 315px;
+
 $navbar_z: 20;
 $contents_z: 10;
 $background_z: -10;
@@ -26,7 +29,7 @@ $h1_align: center;
 $h1font_size: 5em;
 
 .pc {
-    @import "index.scss";
+    @import "body.scss";
     @import "background.scss";
     @import "contents.scss";
     @import "navbar.scss";

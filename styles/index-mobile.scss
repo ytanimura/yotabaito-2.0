@@ -2,6 +2,8 @@
 
 // logo is 74 x 10
 $logo_aspect: 7.4;
+// youtube frame is 560 x 315
+$youtube_aspect: math.div(560.0, 315.0);
 
 $navbar_height: 40px;
 $navbar_logo_height: 25px;
@@ -18,6 +20,9 @@ $contents_icon_size: 30vw;
 $contents_icon_font_size: 3vw;
 $contents_icon_margin_height: 2.5vh;
 
+$contents_iframe_width: 70vw;
+$contents_iframe_height: math.div($contents_iframe_width, $youtube_aspect);
+
 $navbar_z: 20;
 $contents_z: 10;
 $background_z: -10;
@@ -26,7 +31,7 @@ $h1_align: left;
 $h1font_size: 2em;
 
 .mobile {
-    @import "index.scss";
+    @import "body.scss";
     @import "background.scss";
     @import "contents.scss";
     @import "navbar.scss";

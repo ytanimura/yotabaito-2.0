@@ -64,7 +64,6 @@ fn from_mobile() -> bool {
         .user_agent()
         .expect_throw("failed to get userAgent")
         .to_ascii_lowercase();
-    gloo::console::log!(&agent);
     agent.contains("android") || agent.contains("iphone") || agent.contains("ipad")
 }
 
@@ -76,11 +75,7 @@ fn set_title() {
 }
 
 fn set_html_class(from_mobile: bool) {
-    let html = gloo::utils::document()
-        .get_element_by_id("root")
-        .unwrap()
-        .dyn_into::<HtmlElement>()
-        .unwrap();
+    let html = gloo::utils::document_element();
     if from_mobile {
         html.set_class_name("mobile");
     } else {
