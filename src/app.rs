@@ -19,7 +19,7 @@ impl Component for App {
         let query = Query::from_location();
         if query.doc.as_deref() == Some("none") {
             let shader_name = query.shader.unwrap_or_else(|| String::from("default"));
-            html! { <background::BackGround shader_name={ shader_name } reflex_date_time={ !self.from_mobile } /> }
+            html! { <background::BackGround shader_name={ shader_name } /> }
         } else {
             let doc_name = query.doc.clone();
             let shader_name = query
