@@ -176,10 +176,10 @@ float rayFoward(in Ray ray, in vec3 p) {
     return min(min(t2.x, t2.y), t2.z) + 1.0e-2;
 }
 
-vec3 calcNormal(in vec3 p) {
+vec3 calcNormal(in vec3 p, in vec3 base) {
     const vec2 e = vec2(1.0e-4, 0.0);
-    vec3 axis = randomAxis(hash23(floor(p)));
-    vec2 rand = hash23(floor(p));
+    vec3 axis = randomAxis(hash23(floor(p + base)));
+    vec2 rand = hash23(floor(p + base));
     mat3 mat = rotate3D(axis, iTime + rand.y);
     p -= floor(p) + 0.5;
     p = mat * p;
@@ -191,21 +191,23 @@ vec3 calcNormal(in vec3 p) {
 }
 
 void mainImage0(out vec4 O, in vec2 U) {
+    float ft = fract(iTime * 0.1), it = floor(iTime * 0.1);
     Camera camera = Camera(
-        vec3(0, 0, iTime * 0.1),
+        vec3(0, 0, ft),
         vec3(0, 0, 1),
         vec3(0, 1, 0),
         PI / 4.0,
         iResolution.x / iResolution.y
     );
     Ray ray = cameraRay(camera, U / iResolution.xy);
+    vec3 base = vec3(0, 0, it);
 
     float dist = -1.0, t = 0.0;
     for (int i = 0; i < 32; i++) {
         vec3 p = ray.origin + t * ray.direction;
-        vec2 rand = hash23(floor(p));
+        vec2 rand = hash23(floor(p + base));
         if (rand.x > 0.9) {
-            vec3 axis = randomAxis(hash23(floor(p)));
+            vec3 axis = randomAxis(hash23(floor(p + base)));
             mat3 mat = rotate3D(axis, iTime + rand.y);
             Ray ray0 = Ray(
                 mat * (ray.origin - floor(p) - 0.5),
@@ -220,7 +222,7 @@ void mainImage0(out vec4 O, in vec2 U) {
     vec3 col = vec3(0.8, 0.9, 1.0);
     if (dist != -1.0 && t < FAR) {
         vec3 p = ray.origin + dist * ray.direction;
-        vec3 normal = calcNormal(p);
+        vec3 normal = calcNormal(p, base);
         float c = -dot(ray.direction, normal);
         c = clamp(c, 0.0, 1.0);
         float k = dist / FAR;

@@ -45,7 +45,8 @@ impl Component for BackGround {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(ctx: &Context<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
+        /*
         let init_time = match ctx.props().reflex_date_time {
             true => {
                 let date = Date::new(&Date::now().into());
@@ -53,6 +54,9 @@ impl Component for BackGround {
             }
             false => 0.0,
         };
+        */
+        let date = Date::new(&Date::now().into());
+        let init_time = (date.get_minutes() * 60 + date.get_seconds()) as f64;
         Self {
             gl: None,
             canvas: Default::default(),
