@@ -252,11 +252,10 @@ void mainImage0(out vec4 O, in vec2 U) {
 }
 
 float fbm(vec3 x) {
-    float f = 1.0;
     float t = 0.0;
     for( int i=0; i < 5; i++ ) {
-        t += hash13(f*x);
-        f *= 2.0;
+        t += hash13(x);
+        x *= 2.0;
     }
     return t;
 }
