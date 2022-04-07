@@ -76,7 +76,7 @@ fn parse_shader(shader: String, hash: &str) -> String {
             }
             if !line.is_empty() && (line.len() < 2 || (&line[0..2] != "//" && &line[0..2] != "/*"))
             {
-                res += &line.trim();
+                res += line.trim();
                 res += "\n";
             }
             Ok(())

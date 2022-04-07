@@ -99,7 +99,7 @@ impl Component for BackGround {
                 if deltime > 1.0 / 40.0 {
                     pipeline.pixel_ratio = 2;
                 }
-            } 
+            }
             if correct_canvas_size(&canvas, pipeline.pixel_ratio) {
                 if let Some(gl) = &self.gl {
                     gl.viewport(0, 0, canvas.width() as i32, canvas.height() as i32);
