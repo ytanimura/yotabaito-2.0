@@ -191,8 +191,9 @@ vec3 calcNormal(in vec3 p) {
 }
 
 void mainImage0(out vec4 O, in vec2 U) {
+    vec3 pos = vec3(0, 0, iTime * 0.1);
     Camera camera = Camera(
-        vec3(0, 0, iTime * 0.1),
+        pos,
         vec3(0, 0, 1),
         vec3(0, 1, 0),
         PI / 4.0,

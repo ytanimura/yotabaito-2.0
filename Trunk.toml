@@ -12,3 +12,13 @@ command_arguments = [
     "-o",
     "./resources/codepage12.png",
 ]
+
+[[hooks]]
+stage = "pre_build"
+command = "curl"
+command_arguments = [
+    # github icon
+    "https://avatars.githubusercontent.com/u/9394788",
+    "-o",
+    "./resources/profile-icon.png",
+]
