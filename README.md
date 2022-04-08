@@ -1,6 +1,10 @@
 # YOTABAITO 2.0
 
-This is [ytanimura](https://github.com/ytanimura)'s portfolio site.
+**This is the source code to build the portfolio site.**  
+
+**👉[The built portfolio site is here](https://ytanimura.gitlab.io/yotabaito)👈**
+
+YOTABAITO is [ytanimura](https://github.com/ytanimura)'s portfolio site.
 
 ## Technical overview
 
