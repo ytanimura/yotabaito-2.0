@@ -19,15 +19,11 @@ For more details, please visit GitHub page.
 
 ### Use always
 
-Rust, GLSL
+Rust, GLSL, WGSL
 
 ### Used to use well, made something coherent
 
-Ruby, C++, C, D, Java, PostScript, VBA
-
-### Touched
-
-C#, Go, Javascript, Perl, PHP, Python, Scala, Swift, Typescript
+C, C++, D, Java, Javascript, PostScript, Ruby, VBA
 
 ## License
 
