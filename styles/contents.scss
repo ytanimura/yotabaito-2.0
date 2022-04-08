@@ -1,5 +1,5 @@
 $contents_logo_width: $contents_logo_height * $logo_aspect;
-$contents_logo_margin: math.div($contents_width - $contents_logo_width, 2);
+//$contents_logo_margin: math.div($contents_width - $contents_logo_width, 2);
 
 .outer_box {
     z-index: $contents_z;
@@ -7,11 +7,9 @@ $contents_logo_margin: math.div($contents_width - $contents_logo_width, 2);
     margin: 0 auto;
 
     .contents {
-        width: $contents_width;
-        padding: $contents_padding_height
-            $contents_padding_width
-            ($contents_padding_height * 2)
-            $contents_padding_width;
+        min-width: $contents_min_width;
+        max-width: $contents_max_width;
+        padding: $contents_padding_height $contents_padding_width ($contents_padding_height * 2) $contents_padding_width;
         margin: ($navbar_height * 2) auto;
         display: block;
 
@@ -43,20 +41,22 @@ $contents_logo_margin: math.div($contents_width - $contents_logo_width, 2);
             height: $contents_iframe_height;
         }
 
-        .logo {
-            display: block;
-            height: $contents_logo_height;
+        .logo-and-copy {
             width: $contents_logo_height * $logo_aspect;
+            display: block;
             margin: 0 auto;
-            margin-top: 5vh;
-            image-rendering: pixelated;
-        }
-
-        .catchcopy {
             text-align: right;
-            margin: 0.5em $contents_logo_margin;
             font-size: math.div($contents_logo_height, 5);
             font-family: fantasy;
+
+            .logo {
+                height: $contents_logo_height;
+                margin-top: 5vh;
+                image-rendering: pixelated;
+            }
+            p {
+                margin: 0.5em 0;
+            }
         }
 
         .contents-top-menu {
@@ -86,10 +86,7 @@ $contents_logo_margin: math.div($contents_width - $contents_logo_width, 2);
                 img {
                     height: $contents_icon_size;
                     width: $contents_icon_size;
-                    border-radius: math.div($contents_icon_font_size, 2)
-                        math.div($contents_icon_font_size, 2)
-                        0
-                        0;
+                    border-radius: math.div($contents_icon_font_size, 2) math.div($contents_icon_font_size, 2) 0 0;
                     margin: 0;
                 }
 

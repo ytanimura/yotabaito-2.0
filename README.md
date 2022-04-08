@@ -27,7 +27,7 @@ Dockerfile for CI container.
 
 ### `Cargo.*` + `src` + `build.rs`
 
-Rust source code for build wasm.
+Rust source code for building wasm.
 
 ### `texts`
 
@@ -53,7 +53,7 @@ These are required to build with `trunk`.
 
 ### License
 
-Any use of markdown texts, logo, and original selfie by others is prohibited.
+Any use of markdown texts, logo, favicon, and original selfie by others is prohibited.
 The background effects are distributed under Attribution 4.0 International or MIT License as indicated at the beginning of each shader.
 Another parts, source code and SCSS, are destributed by MIT Lisence.
 We are creators, not lawyers, and human beings before that.
