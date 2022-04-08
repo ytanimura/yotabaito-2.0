@@ -81,12 +81,6 @@ mat3 rotate3D(vec3 axis, float angle) {
 /******************** Main ********************/
 const float FAR = 12.0;
 
-// https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
-float sdBox( vec3 p, vec3 b ) {
-  vec3 q = abs(p) - b;
-  return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
-}
-
 // https://www.iquilezles.org/www/articles/intersectors/intersectors.htm
 float roundedboxIntersect(in Ray ray, in vec3 size, in float rad ) {
     vec3 rd = ray.direction, ro = ray.origin;
@@ -171,6 +165,11 @@ float roundedboxIntersect(in Ray ray, in vec3 size, in float rad ) {
     return t;
 }
 
+// https://www.shadertoy.com/view/WlSXRW
+vec3 roundedboxNormal( in vec3 pos, in vec3 siz, in float rad ) {
+    return sign(pos)*normalize(max(abs(pos)-siz,0.0));
+}
+
 // Random unit vector
 // https://qiita.com/aa_debdeb/items/e416ae8a018692fc07eb
 vec3 randomAxis(vec2 gen) {
@@ -192,51 +191,42 @@ float rayFoward(in Ray ray, in vec3 p) {
     return min(min(t2.x, t2.y), t2.z) + 1.0e-2;
 }
 
-vec3 calcNormal(in vec3 p) {
-    const vec2 e = vec2(1.0e-4, 0.0);
-    vec3 axis = randomAxis(hash23(floor(p)));
-    vec2 rand = hash23(floor(p));
-    mat3 mat = rotate3D(axis, iTime + rand.y);
-    p -= floor(p) + 0.5;
-    p = mat * p;
-    return transpose(mat) * normalize(vec3(
-        sdBox(p + e.xyy, vec3(0.15)) - sdBox(p - e.xyy, vec3(0.15)),
-        sdBox(p + e.yxy, vec3(0.15)) - sdBox(p - e.yxy, vec3(0.15)),
-        sdBox(p + e.yyx, vec3(0.15)) - sdBox(p - e.yyx, vec3(0.15))
-    ));
-}
-
 void mainImage0(out vec4 O, in vec2 U) {
+    float ft = fract(iTime * 0.1), it = floor(iTime * 0.1);
     Camera camera = Camera(
-        vec3(0, 0, iTime * 0.1),
+        vec3(0, 0, ft),
         vec3(0, 0, 1),
         vec3(0, 1, 0),
         PI / 4.0,
         iResolution.x / iResolution.y
     );
     Ray ray = cameraRay(camera, U);
+    vec3 base = vec3(0, 0, it);
 
-    float dist = -1.0, t = 0.0;
-    for (int i = 0; i < 32; i++) {
+    float dist = -1.0, t = 0.0; vec3 normal;
+    for (int i = 0; i < 32 && t < FAR; i++) {
         vec3 p = ray.origin + t * ray.direction;
-        vec2 rand = hash23(floor(p));
+        vec2 rand = hash23(floor(p + base));
         if (rand.x > 0.9) {
-            vec3 axis = randomAxis(hash23(floor(p)));
+            vec3 axis = randomAxis(hash23(floor(p + base)));
             mat3 mat = rotate3D(axis, iTime + rand.y);
             Ray ray0 = Ray(
                 mat * (ray.origin - floor(p) - 0.5),
                 normalize(mat * ray.direction)
             );
             dist = roundedboxIntersect(ray0, vec3(0.15), 0.02);
+            if (dist != -1.0) {
+                vec3 p = ray0.origin + dist * ray0.direction;
+                normal = transpose(mat)
+                    * roundedboxNormal(p, vec3(0.15), 0.02);
+                break;
+            }
         }
-        if (dist != -1.0 || t > FAR) break;
         t = rayFoward(ray, p);
     }
 
     vec3 col = vec3(0.8, 0.9, 1.0);
     if (dist != -1.0 && t < FAR) {
-        vec3 p = ray.origin + dist * ray.direction;
-        vec3 normal = calcNormal(p);
         float c = -dot(ray.direction, normal);
         c = clamp(c, 0.0, 1.0);
         float k = dist / FAR;
