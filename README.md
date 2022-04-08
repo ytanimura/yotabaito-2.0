@@ -2,7 +2,7 @@
 
 This is [ytanimura](https://github.com/ytanimura)'s portfolio site.
 
-## Overview
+## Technical overview
 
 - Clean architecture with Rust + Yew + Trunk.
 - All background effects are rendered in real time by WebGL.
@@ -36,6 +36,7 @@ All descriptive part. It is described by markdown, and translated into HTML by `
 ### `shaders`
 
 Shaders for Background effects. All background effects are rendered in real time by WebGL.
+All are written in code for Shadertoy and can be debugged in VSCode's Shader Toy extension.
 
 ### `styles`
 
@@ -49,3 +50,10 @@ by a trunk pre-script instead of being placed in the repository.
 ### `index.html + Trunk.toml`
 
 These are required to build with `trunk`.
+
+### License
+
+Any use of markdown texts, logo, and original selfie by others is prohibited.
+The background effects are distributed under Attribution 4.0 International or MIT License as indicated at the beginning of each shader.
+Another parts, source code and SCSS, are destributed by MIT Lisence.
+We are creators, not lawyers, and human beings before that.
