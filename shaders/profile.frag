@@ -4,6 +4,15 @@
 // Copyright © 2022 Dr. Yoshinori Tanimura
 // MIT License (photograph texture is not included)
 
+/********************* About bonus effects *********************/
+/* I was going to put them on the website, but decided not to  */
+/* because one cannot concentrate on the contents with a man's */
+/* face in the background. I have compiled a list of various   */
+/* techniques, and if you want to activate them, please remove */
+/* comment out of the macro BONUS_TRACK.                       */
+/***************************************************************/
+//#define BONUS_TRACK
+
 // Hash without Sine https://www.shadertoy.com/view/4djSRW
 vec2 hash23(vec3 p3) {
     p3 = fract(p3 * vec3(.1031, .1030, .0973));
@@ -50,14 +59,14 @@ vec2 getNearestSample(in vec2 U) {
     return Vmini / TILE_RESOLUTION;
 }
 
-float luminance(in vec3 c) {
-    return dot(c, vec3(0.2126, 0.7152, 0.0722));
-}
-
 // voronoi mosaic
 vec4 voronoi(in vec2 U) {
     U = getNearestSample(U);
     return getColor(U);
+}
+
+float luminance(in vec3 c) {
+    return dot(c, vec3(0.2126, 0.7152, 0.0722));
 }
 
 vec4 laplacianFilter(in vec2 U) {

@@ -51,7 +51,18 @@ by a trunk pre-script instead of being placed in the repository.
 
 These are required to build with `trunk`.
 
-### License
+## Shader debug status
+
+| OS | Browser | Status |  
+|----|----|----|  
+| Windows | Chrome, Firefox | OK |  
+| WSL | Firefox | Very slow because using CPU |  
+| MacOS | Chrome, Safari | OK, perhaps a little slow |  
+| FireHD | Silk | OK |  
+| Android | Chrome | a few bugs |  
+| iPhone | - | not tested |
+
+## License
 
 Any use of markdown texts, logo, favicon, and original selfie by others is prohibited.
 The background effects are distributed under Attribution 4.0 International or MIT License as indicated at the beginning of each shader.

@@ -13,7 +13,8 @@ Crates for STEP (Standard for the Exchange of Product model data) written in pur
 ## About this page
 
 All contents of this page, include the web page design and background shader art, were created by myself using [Trunk](https://trunkrs.dev/) and [Yew](https://yew.rs/).
-For more details, please visit GitHub page.
+
+For more details, please visit [GitHub repository](https://github.com/ytanimura/yotabaito-2.0).
 
 ## Experience of programming langueges
 
