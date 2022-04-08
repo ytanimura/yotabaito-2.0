@@ -1,7 +1,8 @@
 use crate::*;
+use gloo::events::EventListener;
 use js_sys::Date;
 use std::sync::{
-    atomic::{AtomicU32, Ordering},
+    atomic::{AtomicI32, AtomicU32, Ordering},
     Arc,
 };
 use wasm_bindgen::JsCast;
@@ -13,10 +14,6 @@ mod shaders {
 mod webgl;
 use webgl::{Pipeline, ShaderSource};
 
-pub enum Msg {
-    Render(f64),
-}
-
 #[derive(Debug)]
 pub struct BackGround {
     gl: Option<WebGl2RenderingContext>,
@@ -25,11 +22,43 @@ pub struct BackGround {
     render_loop: Option<gloo::render::AnimationFrame>,
     frame_count: u32,
     init_time: f64,
+    mouse_listener: MouseListner,
+}
+
+pub enum Msg {
+    Render(f64),
 }
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct Props {
     pub shader_name: String,
+}
+
+#[derive(Debug)]
+pub struct MouseListner {
+    mouse_position: Arc<[AtomicI32; 2]>,
+    _handler: EventListener,
+}
+
+impl MouseListner {
+    fn set() -> MouseListner {
+        let mouse_position: Arc<[AtomicI32; 2]> = Default::default();
+        let cloned_mp = Arc::clone(&mouse_position);
+        let closure = move |e: &Event| {
+            let e = MouseEvent::from(wasm_bindgen::JsValue::from(e.clone()));
+            cloned_mp[0].store(e.client_x(), Ordering::SeqCst);
+            cloned_mp[1].store(e.client_y(), Ordering::SeqCst);
+        };
+        let _handler = if let Ok(Some(parent)) = gloo::utils::window().parent() {
+            EventListener::new(&parent, "mousemove", closure)
+        } else {
+            EventListener::new(&gloo::utils::window(), "mousemove", closure)
+        };
+        MouseListner {
+            mouse_position,
+            _handler,
+        }
+    }
 }
 
 fn get_shader(shader_name: &str) -> Option<ShaderSource> {
@@ -54,6 +83,7 @@ impl Component for BackGround {
             render_loop: None,
             frame_count: 0,
             init_time,
+            mouse_listener: MouseListner::set(),
         }
     }
 
@@ -101,11 +131,16 @@ impl Component for BackGround {
             // 30 FPS, profile is only allowed 60FPS
             if self.frame_count % 2 == 0 || shader_name == "profile" {
                 let resolution = [canvas.width() as f32, canvas.height() as f32];
+                let mouse_position = [
+                    self.mouse_listener.mouse_position[0].load(Ordering::SeqCst) as f32,
+                    self.mouse_listener.mouse_position[1].load(Ordering::SeqCst) as f32,
+                ];
                 webgl::gl_rendering(
                     gl,
                     pipeline,
                     resolution,
                     (self.init_time + timestamp * 0.001) as f32,
+                    mouse_position,
                 );
             }
             self.frame_count += 1;

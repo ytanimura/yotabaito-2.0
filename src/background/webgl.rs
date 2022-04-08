@@ -8,6 +8,7 @@ pub struct Pipeline {
     pub position_location: u32,
     pub resolution_location: Option<WebGlUniformLocation>,
     pub time_location: Option<WebGlUniformLocation>,
+    pub mouse_location: Option<WebGlUniformLocation>,
     pub texture_location: Option<WebGlUniformLocation>,
     pub texture_resolution_location: Option<WebGlUniformLocation>,
     pub pixel_ratio: u32,
@@ -32,6 +33,7 @@ pub fn create_pipeline(gl: &GL, shader: ShaderSource) -> Pipeline {
         resolution_location: gl.get_uniform_location(&program, "iResolution"),
         time_location: gl.get_uniform_location(&program, "iTime"),
         texture_location: gl.get_uniform_location(&program, "iChannel0"),
+        mouse_location: gl.get_uniform_location(&program, "iMouse"),
         texture_resolution_location: gl.get_uniform_location(&program, "iChannelResolution"),
         program,
         texture,
@@ -81,7 +83,7 @@ fn prepare_program(gl: &GL, shader: ShaderSource) -> (WebGlProgram, Option<Textu
     const VERTEX_SHADER: &str = "#version 300 es
 in vec3 position;void main(){gl_Position=vec4(position,1);}";
     const FRAMENT_SHADER_PREFIX: &str = "#version 300 es
-precision highp float;uniform vec3 iResolution;uniform float iTime;\
+precision highp float;uniform vec3 iResolution;uniform float iTime;uniform vec2 iMouse;\
 uniform sampler2D iChannel0;uniform vec3 iChannelResolution[1];\
 out vec4 outColor;void mainImage(out vec4,in vec2);void main(){mainImage(outColor,gl_FragCoord.xy);}";
 
@@ -145,12 +147,19 @@ pub fn init_gl(gl: &GL) {
     );
 }
 
-pub fn gl_rendering(gl: &GL, pipeline: &Pipeline, resolution: [f32; 2], time: f32) {
+pub fn gl_rendering(
+    gl: &GL,
+    pipeline: &Pipeline,
+    resolution: [f32; 2],
+    time: f32,
+    mouse_position: [f32; 2],
+) {
     let Pipeline {
         program,
         position_location,
         resolution_location,
         time_location,
+        mouse_location,
         texture_location,
         texture,
         texture_resolution_location,
@@ -168,6 +177,11 @@ pub fn gl_rendering(gl: &GL, pipeline: &Pipeline, resolution: [f32; 2], time: f3
         1.0,
     );
     gl.uniform1f(time_location.as_ref(), time);
+    gl.uniform2f(
+        mouse_location.as_ref(),
+        mouse_position[0],
+        resolution[1] - mouse_position[1],
+    );
     gl.uniform1i(texture_location.as_ref(), 0);
 
     if let Some(TextureInfo {

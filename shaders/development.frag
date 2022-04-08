@@ -54,7 +54,7 @@ int message(in vec2 uv) {
     return textureLod(iChannel0, (base + uv) / 16.0, 0.0).x < 0.5 ? 1 : 0;
 }
 
-int picture(in ivec2 iuv) {
+int picture(in ivec2 iuv, in ivec2 im) {
     vec2 uv = vec2(iuv) * (2.0 * NUM_SIZE) / iResolution.y;
     float time = iTime / 4.0;
     vec2 rand = hash21(floor(time));
@@ -67,7 +67,9 @@ int picture(in ivec2 iuv) {
         case 3: c = sinWave(uv); break;
         default: c = message(uv); break;
     }
-    return rand.y < 0.5 ? c : 1 - c;
+    c = rand.y < 0.5 ? c : 1 - c;
+    if (abs(iuv.x - im.x) < 3 && abs(iuv.y - im.y) < 3) c = 1 - c;
+    return c;
 }
 
 float letter(in vec2 uv, in int code) {
@@ -79,7 +81,9 @@ float letter(in vec2 uv, in int code) {
 void mainImage(out vec4 O, in vec2 U) {
     vec2 r = iResolution.xy;
     vec2 uv = (U + U - r) / (2.0 * NUM_SIZE) + vec2(.5, 0);
-    int code = picture(ivec2(floor(uv)));
+    vec2 m = iMouse.xy;
+    m = (m + m - r) / (2.0 * NUM_SIZE) + vec2(.5, 0);
+    int code = picture(ivec2(floor(uv)), ivec2(floor(m)));
     float c = letter(fract(uv), code);
     O = vec4(c * c * c, c, c * c, 1);
 }
