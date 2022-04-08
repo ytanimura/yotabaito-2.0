@@ -122,14 +122,12 @@ impl Component for BackGround {
         let Msg::Render(timestamp) = msg;
         if let (Some(gl), Some(pipeline)) = (&self.gl, &mut self.pipeline) {
             let canvas = self.canvas.cast::<HtmlCanvasElement>().unwrap();
-            let shader_name = &ctx.props().shader_name;
             if correct_canvas_size(&canvas, pipeline.pixel_ratio) {
                 if let Some(gl) = &self.gl {
                     gl.viewport(0, 0, canvas.width() as i32, canvas.height() as i32);
                 }
             }
-            // 30 FPS, profile is only allowed 60FPS
-            if self.frame_count % 2 == 0 || shader_name == "profile" {
+            if self.frame_count % 2 == 0 {
                 let resolution = [canvas.width() as f32, canvas.height() as f32];
                 let mouse_position = [
                     self.mouse_listener.mouse_position[0].load(Ordering::SeqCst) as f32,
