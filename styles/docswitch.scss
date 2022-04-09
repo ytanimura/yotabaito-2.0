@@ -1,0 +1,16 @@
+@use "sass:math";
+
+.docswitch {
+	right: 0;
+	bottom: 0;
+	width: $doc_switch_size;
+	height: $doc_switch_size;
+	margin: $doc_switch_margin + 8px $doc_switch_margin;
+	border: solid 2px;
+	border-radius: math.div($doc_switch_size, 10);
+	
+	position: fixed;
+	z-index: $navbar_z;
+
+	background-color: #FCFCFC;
+}

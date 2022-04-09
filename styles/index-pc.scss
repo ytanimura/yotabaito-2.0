@@ -29,9 +29,13 @@ $background_z: -10;
 $h1_align: center;
 $h1font_size: 5em;
 
+$doc_switch_size: 64px;
+$doc_switch_margin: 16px;
+
 .pc {
     @import "body.scss";
     @import "background.scss";
     @import "contents.scss";
     @import "navbar.scss";
+    @import "docswitch.scss";
 }

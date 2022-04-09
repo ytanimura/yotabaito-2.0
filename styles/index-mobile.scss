@@ -31,9 +31,13 @@ $background_z: -10;
 $h1_align: left;
 $h1font_size: 2em;
 
+$doc_switch_size: 32px;
+$doc_switch_margin: 8px;
+
 .mobile {
     @import "body.scss";
     @import "background.scss";
     @import "contents.scss";
     @import "navbar.scss";
+    @import "docswitch.scss";
 }
