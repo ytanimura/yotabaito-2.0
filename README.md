@@ -2,7 +2,7 @@
 
 **This is the source code to build the portfolio site.**  
 
-**👉[The built portfolio site is here](https://ytanimura.gitlab.io/yotabaito)👈**
+**👉[The built portfolio site is here](https://www.yotabaito.net)👈**
 
 YOTABAITO is [ytanimura](https://github.com/ytanimura)'s portfolio site.
 
