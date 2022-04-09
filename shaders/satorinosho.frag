@@ -29,9 +29,10 @@ float fbm(vec2 p) {
 
 void mainImage(out vec4 O, in vec2 U) {
     U /= iResolution.y;
+    float time = mod(iTime, 200.0);
     vec3 icol = vec3(0);
     for (float i = 1.0; i <= 10.0; i += 1.0) {
-        float height = fbm(vec2(U.x + iTime / (4.0 * i), i)) / 5.0;
+        float height = fbm(vec2(U.x + time / (4.0 * i), i)) / 5.0;
         height = (0.8 + 0.4 * (i - 1.0)) * height - 0.3;
         float c = smoothstep(height + 0.005, height - 0.005, U.y);
         icol += max(vec3(c) * pow(2.0, - i + 1.0), icol) - icol;
