@@ -37,7 +37,7 @@ pub struct Props {
 #[derive(Debug)]
 pub struct MouseListner {
     mouse_position: Arc<[AtomicI32; 2]>,
-    _handler: EventListener,
+    _handlers: Vec<EventListener>,
 }
 
 impl MouseListner {
@@ -49,14 +49,14 @@ impl MouseListner {
             cloned_mp[0].store(e.client_x(), Ordering::SeqCst);
             cloned_mp[1].store(e.client_y(), Ordering::SeqCst);
         };
-        let _handler = if let Ok(Some(parent)) = gloo::utils::window().parent() {
-            EventListener::new(&parent, "mousemove", closure)
-        } else {
-            EventListener::new(&gloo::utils::window(), "mousemove", closure)
-        };
+        let win = &gloo::utils::window();
+        let mut _handlers = vec![EventListener::new(win, "mousemove", closure.clone())];
+        if let Ok(Some(parent)) = gloo::utils::window().parent() {
+            _handlers.push(EventListener::new(&parent, "mousemove", closure));
+        }
         MouseListner {
             mouse_position,
-            _handler,
+            _handlers,
         }
     }
 }

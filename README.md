@@ -23,7 +23,7 @@ For more details, please see [Dockerfile for CI container](./docker/ci-container
 
 ## Files and directories
 
-Since a folder contain only markdowns, we will not put README.md in each folder, but will explain the entire contents here.
+Since a folder contains only markdowns, we will not put README.md in each folder, but will explain the entire contents here.
 
 ### `docker`
 
