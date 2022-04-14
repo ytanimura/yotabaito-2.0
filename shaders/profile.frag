@@ -62,7 +62,18 @@ vec2 getNearestSample(in vec2 U) {
 // voronoi mosaic
 vec4 voronoi(in vec2 U) {
     U = getNearestSample(U);
-    return getColor(U);
+    vec3 e = vec3(1, 1, 0) / iResolution;
+    return (
+          getColor(U)
+        + getColor(U - e.xz - e.zy)
+        + getColor(U - e.xz)
+        + getColor(U - e.xz + e.zy)
+        + getColor(U - e.zy)
+        + getColor(U + e.zy)
+        + getColor(U + e.xz - e.zy)
+        + getColor(U + e.xz)
+        + getColor(U + e.xz + e.zy)
+    ) / 9.0;
 }
 
 float luminance(in vec3 c) {
